@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Scheduler
+namespace SchedulerUI
 {
 
   public class MeetingModel
@@ -25,9 +24,56 @@ namespace Scheduler
     public MemberModel Quiz { get; set; }
     public MemberModel Video { get; set; }
     public MemberModel HotSeat { get; set; }
-    public List<int> Atendees { get; set; }
+    public List<int> Attendees { get; set; }
     public MemberModel TTWinner { get; set; }
-    public List<int> TTCompetitors { get; set; }
+    public List<int> TTContestants { get; set; }
+
+    public bool Resolved { get; set; }
+    public MeetingModel()
+    {
+
+    }
+
+    public string DayOfMeetingS
+    {
+      get { return DayOfMeeting.ToString(); }
+    }
+
+    public MeetingModel(string[] record, ref ObservableCollection<MemberModel> members)
+    {
+      if (!string.IsNullOrEmpty(record[1])) DayOfMeeting = DateTime.Parse(record[1]);
+      if (!string.IsNullOrEmpty(record[2])) Toastmaster = members.Where(it => it.MemberID == Int32.Parse(record[2])).FirstOrDefault();
+
+
+      if (!string.IsNullOrEmpty(record[3])) Speaker1 = members.Where(it => it.MemberID == Int32.Parse(record[3])).FirstOrDefault();
+      if (!string.IsNullOrEmpty(record[4])) Speaker2 = members.Where(it => it.MemberID == Int32.Parse(record[4])).FirstOrDefault();
+      if (!string.IsNullOrEmpty(record[5])) GeneralEvaluator = members.Where(it => it.MemberID == Int32.Parse(record[5])).FirstOrDefault();
+      if (!string.IsNullOrEmpty(record[6])) Evaluator1 = members.Where(it => it.MemberID == Int32.Parse(record[6])).FirstOrDefault();
+      if (!string.IsNullOrEmpty(record[7])) Evaluator2 = members.Where(it => it.MemberID == Int32.Parse(record[7])).FirstOrDefault();
+      if (!string.IsNullOrEmpty(record[8])) TT = members.Where(it => it.MemberID == Int32.Parse(record[8])).FirstOrDefault();
+      if (!string.IsNullOrEmpty(record[9])) Ah = members.Where(it => it.MemberID == Int32.Parse(record[9])).FirstOrDefault();
+      if (!string.IsNullOrEmpty(record[10])) Gram = members.Where(it => it.MemberID == Int32.Parse(record[10])).FirstOrDefault();
+      if (!string.IsNullOrEmpty(record[11])) Timer = members.Where(it => it.MemberID == Int32.Parse(record[11])).FirstOrDefault();
+      if (!string.IsNullOrEmpty(record[12])) Quiz = members.Where(it => it.MemberID == Int32.Parse(record[12])).FirstOrDefault();
+      if (!string.IsNullOrEmpty(record[13])) Video = members.Where(it => it.MemberID == Int32.Parse(record[13])).FirstOrDefault();
+      if (!string.IsNullOrEmpty(record[14])) HotSeat = members.Where(it => it.MemberID == Int32.Parse(record[14])).FirstOrDefault();
+      if (!string.IsNullOrEmpty(record[15]))
+      {
+        string m = record[15];
+        char[] delims = new char[] { ';' };
+        List<string> t = m.Split(delims, StringSplitOptions.None).ToList();
+        Attendees = t.Select(it => Int32.Parse(it)).ToList();
+      }
+      if (!string.IsNullOrEmpty(record[16])) TTWinner = members.Where(it => it.MemberID == Int32.Parse(record[16])).FirstOrDefault();
+
+      if (!string.IsNullOrEmpty(record[17]))
+      {
+        string m = record[17];
+        char[] delims = new char[] { ';' };
+        List<string> t = m.Split(delims, StringSplitOptions.None).ToList();
+        TTContestants = t.Select(it => Int32.Parse(it)).ToList();
+      }
+    }
 
     public void Save()
     {
@@ -105,5 +151,28 @@ namespace Scheduler
       string querystr = "UPDATE Testmembers SET Speaker=@Speaker WHERE MemberID=@MemberID";
       sql2.CommandText = querystr;
     }
+
+  }
+
+  public class MeetingModel3 : MeetingModel
+  {
+    public MeetingModel3()
+    { }
+
+    public MemberModel Speaker3 { get; set; }
+    public MemberModel Evaluator3 { get; set; }
+  }
+
+  public class MeetingModel5 : MeetingModel
+  {
+    public MeetingModel5()
+    { }
+
+    public MemberModel Speaker3 { get; set; }
+    public MemberModel Speaker4 { get; set; }
+    public MemberModel Speaker5 { get; set; }
+    public MemberModel Evaluator3 { get; set; }
+    public MemberModel Evaluator4 { get; set; }
+    public MemberModel Evaluator5 { get; set; }
   }
 }
