@@ -34,7 +34,7 @@ namespace ScheduleUI
       // File.ReadAllText 
 
       //System.IO.FileStream fileStream = new FileStream("C:\\Users\\mike\\Documents\\TI\\Members.txt", FileMode.Open, FileAccess.Read);
-      StreamReader strmReader = new StreamReader("C:\\Users\\mikef\\Documents\\Members.csv");
+      StreamReader strmReader = new StreamReader("C:\\Users\\mike\\Documents\\TI\\Members.csv");
       string firstLine = strmReader.ReadLine();
       string line;
       char[] delims = new char[] { ',' };
@@ -45,7 +45,7 @@ namespace ScheduleUI
         _members.Add(rcd);
 
       }
-
+      strmReader.Close();
       _memberList = _members.ToList();
       //fileStream.Close();
     }
