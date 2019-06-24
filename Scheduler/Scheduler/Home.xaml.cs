@@ -22,7 +22,7 @@ namespace Scheduler
     {
       InitializeComponent();
     }
-    private void GetMembers (ref List<MemberModel> members)
+    private void GetMembers(ref List<MemberModel> members)
     {
       if (_membersOriginal.Count > 40)
       {
@@ -42,7 +42,7 @@ namespace Scheduler
         theMember.MemberID = (int)rowMember.ItemArray[1];
         theMember.Name = rowMember.ItemArray[2].ToString();
 
-          if (theMember.Name == "Mike Frith" || theMember.Name == "Nabil Rasool")
+        if (theMember.Name == "Mike Frith" || theMember.Name == "Nabil Rasool" || theMember.Name == "Wes Jones" || theMember.Name == "Rebecca Lehman" || theMember.Name == "Uma Harano")
             continue;
 
         if (!System.DBNull.Value.Equals(rowMember.ItemArray[3]))
@@ -182,8 +182,8 @@ namespace Scheduler
       //  members.Add(theMember);
       //}
       GetMembers(ref members);
-      List<DateTime> meetings = GetMonthlyMeetings(new DateTime(2019, 6, 5));
-      int NumberOfMeetings =  meetings.Count;
+      List<DateTime> meetings = GetMonthlyMeetings(new DateTime(2019, 7, 3));
+      int NumberOfMeetings = 5;//  meetings.Count;
       List<MemberModel> speakers = GetRoles(members, NumberOfMeetings, "speaker");
       List<string> snames = new List<string>();
       foreach (var s in speakers)
@@ -336,7 +336,7 @@ namespace Scheduler
 
       using (StreamWriter file = new StreamWriter("C:\\Users\\mike\\Documents\\TI\\MeetingsNext.csv"))
       {
-        string dates = "Role, June 5, June 12, June 19, June 26, June 28";
+        string dates = "Role, July3, July 17, July 24, July 26, July 31";
         file.WriteLine(dates);
         string row1 = "Toastmaster," + tnames[0] + "," + tnames[1] + "," + tnames[2] + "," + tnames[3] + "," + tnames[4];// + "," + tnames[5];
         file.WriteLine(row1);

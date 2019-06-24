@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,7 +81,8 @@ namespace ScheduleUI
     {
       DayOfMeeting = meetingDate;
       _template = meetingTemplate;
-      _members = members;  
+      _members = members;
+      meetingModel = new MeetingModel();
     }
     
     public void Generate()
@@ -124,7 +126,40 @@ namespace ScheduleUI
       list.Add(Toastmaster.Name);
       list.Add(Speaker1.Name);
       list.Add(Speaker2.Name);
+      list.Add(GeneralEvaluator.Name);
+      list.Add(Evaluator1.Name);
+      list.Add(Evaluator2.Name);
+      list.Add(TT.Name);
+      list.Add(Ah.Name);
+      list.Add(Timer.Name);
+      list.Add(Gram.Name);
+      list.Add(Quiz.Name);
+      list.Add(Video.Name);
+      list.Add(HotSeat.Name);
       return list;
+    }
+
+    public void Save(int meetingID)
+    {
+      //System.IO.FileStream fileStream = new FileStream("C:\\Users\\mike\\Documents\\TI\\Meetings.dat", FileMode.Append, FileAccess.Write);
+      //StreamWriter strmWriter = new StreamWriter(fileStream);
+      //strmWriter.Write(this.ToFile());
+      meetingModel.DayOfMeeting = DayOfMeeting;
+      meetingModel.Toastmaster = Toastmaster;
+      meetingModel.Speaker1 = Speaker1;
+      meetingModel.Speaker2 = Speaker2;
+      meetingModel.GeneralEvaluator = GeneralEvaluator;
+      meetingModel.Evaluator1 = Evaluator1;
+      meetingModel.Evaluator2 = Evaluator2;
+      meetingModel.TT = TT;
+      meetingModel.Gram = Gram;
+      meetingModel.Ah = Ah;
+      meetingModel.Timer = Timer;
+      meetingModel.Quiz = Quiz;
+      meetingModel.Video = Video;
+      meetingModel.HotSeat = HotSeat;
+      meetingModel.Save(meetingID);
+      
     }
   }
 }
