@@ -26,30 +26,31 @@ namespace ScheduleUI
       _tabs.Add(reportsVM);
 
       DateTime today = DateTime.Today.Date;
-      ObservableCollection<MeetingModel> meetings = meetingsVM.Meetings;
-      var meetingsToResolve = meetings.Where(it => it.Resolved == false);
+      ObservableCollection<MeetingModelBase> meetings = meetingsVM.Meetings;
+      var meetingsToResolve = meetings.Where(it => it.Resolved == "yes");
       if (meetingsToResolve.Count() > 0)
       {
         var meetingsR = meetingsToResolve.OrderBy(it => it.DayOfMeeting);
 
         foreach(var meeting in meetingsR)
         {
-          if (meeting.DayOfMeeting < today )
+          DateTime dom = DateTime.ParseExact(meeting.DayOfMeeting, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+          if (dom < today )
           {
 
           }
         }
       }
 
-      DateTime lastMeeting = meetings[0].DayOfMeeting;
+      DateTime lastMeeting = DateTime.ParseExact(meetings[0].DayOfMeeting, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
       // need to find the meeting(s) to resolve
-     // DateTime lastMeetingResolved = meetings.w
-      bool resolved = meetings[0].Resolved;
+      // DateTime lastMeetingResolved = meetings.w
+      bool resolved = "1" == meetings[0].Resolved;
       if (!resolved)
       {
         // pop up view
         //MeetingViewModel currentMeeting = new MeetingViewModel(meetings[0]);
-        meetings[0].Resolved = true;
+        meetings[0].Resolved = "1";
       }
       //load data files?
       // does it exist? if not create it. if it does, load it.

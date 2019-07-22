@@ -11,8 +11,10 @@ using System.Text.Json.Serialization;
 
 namespace SchedulerUI
 {
-  public class MeetingModelBase
+  [Serializable]
+   public class MeetingModelBase
   {
+    public string MeetingType { get; set; }
     public string ID { get; set; }
     public string DayOfMeeting { get; set; }
     public string Toastmaster { get; set; }
@@ -31,82 +33,209 @@ namespace SchedulerUI
     public List<string> Attendees { get; set; }
 
     public string Resolved { get; set; }
-    public string MeetingType { get; set; }
+
+    public MeetingModelBase Deserialize(string json)
+    {
+      var options = new JsonSerializerOptions
+      {
+        AllowTrailingCommas = true
+      };
+
+      byte[] data = Encoding.UTF8.GetBytes(json);
+      Utf8JsonReader reader = new Utf8JsonReader(data, isFinalBlock: true, state: default);
+      string propertyName = string.Empty;
+      MeetingModelBase f = null;
+      //MeetingModelRegular steve = new MeetingModelRegular();
+      reader.Read(); reader.Read();
+      var name = reader.GetString();
+      reader.Read();
+      var meetingtype = reader.GetString();
+
+      if (meetingtype == "1")
+        f = new MeetingModelRegular();
+      while (reader.Read())
+      {
+
+        switch (reader.TokenType)
+        {
+          case JsonTokenType.PropertyName:
+            {
+              propertyName = reader.GetString();
+              break;
+            }
+          case JsonTokenType.String:
+            {
+              string value = reader.GetString();
+              if (propertyName == "MeetingType")
+              {
+                f.MeetingType = value;
+              }
+
+
+              break;
+
+            }
+
+        }
+
+      }
+      return f;
+      //return JsonSerializer.Parse<MeetingModelRegular>(json, options);
+
+    }
   }
 
+  [Serializable]
   public class MeetingModelRegular : MeetingModelBase
   {
     public string TableTopics { get; set; }
     public string TTWinner { get; set; }
     public List<string> TTContestants { get; set; }
 
-    public string Serialize(MeetingModelRegular value)
-    {
-      var options = new JsonWriterOptions
-      {
-        Indented = true
-      };
+    //public MeetingModelRegular Deserialize(string json)
+    //{
+    //  var options = new JsonSerializerOptions
+    //  {
+    //    AllowTrailingCommas = true
+    //  };
 
-      using (var stream = new System.IO.MemoryStream())
-      {
-        using (var writer = new System.Text.Json.Utf8JsonWriter(stream, options))
-        {
-          writer.WriteStartObject();
-          writer.WriteString("MeetingType", MeetingType);
-          writer.WriteString("ID", ID);
-          writer.WriteString("DayOfMeeting", DayOfMeeting);
-          writer.WriteString("Toastmaster", Toastmaster);
-          writer.WriteString("Speaker1", Speaker1);
-          writer.WriteString("Speaker2", Speaker2);
-          writer.WriteString("GeneralEvaluator", GeneralEvaluator);
-          writer.WriteString("Evaluator1", Evaluator1);
-          writer.WriteString("Evaluator2", Evaluator2);
-          writer.WriteString("TableTopics", TableTopics);
-          writer.WriteString("AhCounter", AhCounter);
-          writer.WriteString("Grammarian", Grammarian);
-          writer.WriteString("Timer", Timer);
-          writer.WriteString("QuizMaster", QuizMaster);
-          writer.WriteString("Video", Video);
-          writer.WriteString("HotSeat", HotSeat);
-          writer.WriteString("Attendees", Attendees?.ToString());
-          writer.WriteString("Resolved", Resolved);
-          writer.WriteEndObject();
-        }
-        return Encoding.UTF8.GetString(stream.ToArray());
-      }
+    //  byte[] data = Encoding.UTF8.GetBytes(json);
+    //  Utf8JsonReader reader = new Utf8JsonReader(data, isFinalBlock: true, state: default);
+    //  string propertyName = string.Empty;
+    //  MeetingModelBase f = null;
+    //  MeetingModelRegular steve = new MeetingModelRegular();
+    //  reader.Read();reader.Read();
+    //  var name = reader.GetString();
+    //  reader.Read();
+    //  var meetingtype = reader.GetString();
 
-     // return JsonSerializer.ToString<MeetingModelRegular>(value, options);
-    }
+    //  //writer.WriteString("MeetingType", MeetingType);
+    //  //writer.WriteString("ID", ID);
+    //  //writer.WriteString("DayOfMeeting", DayOfMeeting);
+    //  //writer.WriteString("Toastmaster", Toastmaster);
+    //  //writer.WriteString("Speaker1", Speaker1);
+    //  //writer.WriteString("Speaker2", Speaker2);
+    //  //writer.WriteString("GeneralEvaluator", GeneralEvaluator);
+    //  //writer.WriteString("Evaluator1", Evaluator1);
+    //  //writer.WriteString("Evaluator2", Evaluator2);
+    //  //writer.WriteString("TableTopics", TableTopics);
+    //  //writer.WriteString("AhCounter", AhCounter);
+    //  //writer.WriteString("Grammarian", Grammarian);
+    //  //writer.WriteString("Timer", Timer);
+    //  //writer.WriteString("QuizMaster", QuizMaster);
+    //  //writer.WriteString("Video", Video);
+    //  //writer.WriteString("HotSeat", HotSeat);
+    //  //writer.WriteString("Attendees", Attendees?.ToString());
+    //  //writer.WriteString("Resolved", Resolved);
+    //  if (meetingtype == "1")
+    //  {
+    //    f = new MeetingModelRegular();
+    //  }
+    //  else if (meetingtype == "2")
+    //  {
+    //    f = new MeetingModel3Speaker();
+    //  }
+    //  else if (meetingtype == "3")
+    //  {
+    //    f = new MeetingModel5Speaker();
+    //  }
 
-    public MeetingModelBase Deserialize(string json)
-    {
-      byte[] data = Encoding.UTF8.GetBytes(json);
-      var t = new MeetingModelRegular();
+    //  while (reader.Read())
+    //  {
 
-      return t;
-    }
+    //    switch(reader.TokenType)
+    //    {
+    //      case JsonTokenType.PropertyName:
+    //        {
+    //          propertyName = reader.GetString();
+    //          break;
+    //        }
+    //      case JsonTokenType.String:
+    //        {
+    //          string value = reader.GetString();
+    //          if (propertyName == "MeetingType")
+    //          {
+    //            steve.MeetingType = value;
+    //          }
+
+
+    //          break;
+
+    //        }
+          
+    //    }
+          
+    //  }
+    //  return steve;
+    //  //return JsonSerializer.Parse<MeetingModelRegular>(json, options);
+
+    //}
+    //public string Serialize(MeetingModelRegular value)
+    //{
+    //  //var options = new JsonWriterOptions
+    //  //{
+    //  //  Indented = true
+    //  //};
+
+    //  using (var stream = new System.IO.MemoryStream())
+    //  {
+    //    using (var writer = new System.Text.Json.Utf8JsonWriter(stream))//, options))
+    //    {
+    //      writer.WriteStartObject();
+    //      writer.WriteString("MeetingType", MeetingType);
+    //      writer.WriteString("ID", ID);
+    //      writer.WriteString("DayOfMeeting", DayOfMeeting);
+    //      writer.WriteString("Toastmaster", Toastmaster);
+    //      writer.WriteString("Speaker1", Speaker1);
+    //      writer.WriteString("Speaker2", Speaker2);
+    //      writer.WriteString("GeneralEvaluator", GeneralEvaluator);
+    //      writer.WriteString("Evaluator1", Evaluator1);
+    //      writer.WriteString("Evaluator2", Evaluator2);
+    //      writer.WriteString("TableTopics", TableTopics);
+    //      writer.WriteString("AhCounter", AhCounter);
+    //      writer.WriteString("Grammarian", Grammarian);
+    //      writer.WriteString("Timer", Timer);
+    //      writer.WriteString("QuizMaster", QuizMaster);
+    //      writer.WriteString("Video", Video);
+    //      writer.WriteString("HotSeat", HotSeat);
+    //      writer.WriteString("Attendees", Attendees?.ToString());
+    //      writer.WriteString("Resolved", Resolved);
+    //      writer.WriteEndObject();
+    //    }
+
+    //    return Encoding.UTF8.GetString(stream.ToArray());
+    //  }
+
+    // // return JsonSerializer.ToString<MeetingModelRegular>(value, options);
+    //}
   }
 
   public class MeetingModel3Speaker : MeetingModelBase
   {
-    public string Speaker3;
-    public string Evaluator3;
+    public string Speaker3 { get; set; }
+    public string Evaluator3 { get; set; }
   }
+  
+  public class MeetingModel4Speaker : MeetingModel3Speaker
+  {
+    public MeetingModel4Speaker()
+    { }
+    public string Speaker4 { get; set; }
+    public string Evaluator4 { get; set; }
 
-  public class MeetingModel5Speaker : MeetingModelBase
+  }
+  public class MeetingModel5Speaker : MeetingModel4Speaker
   {
     public MeetingModel5Speaker()
     { }
 
-    public string Speaker3 { get; set; }
-    public string Speaker4 { get; set; }
+
     public string Speaker5 { get; set; }
-    public string Evaluator3 { get; set; }
-    public string Evaluator4 { get; set; }
     public string Evaluator5 { get; set; }
   }
   public class MeetingModel
   {
+    public int ID { get; set; }
     public DateTime DayOfMeeting { get; set; }
     public MemberModel Toastmaster { get; set; }
     public MemberModel Speaker1 { get; set; }
@@ -139,6 +268,7 @@ namespace SchedulerUI
 
     public MeetingModel(string[] record, ref ObservableCollection<MemberModel> members)
     {
+      if (!string.IsNullOrEmpty(record[0])) ID = Int32.Parse(record[0]);
       if (!string.IsNullOrEmpty(record[1])) DayOfMeeting = DateTime.Parse(record[1]);
       if (!string.IsNullOrEmpty(record[2])) Toastmaster = members.Where(it => it.MemberID == Int32.Parse(record[2])).FirstOrDefault();
 
@@ -195,9 +325,9 @@ namespace SchedulerUI
       //strmWriter.WriteLine(ToFile(meetingID));
       //strmWriter.Close();
       var json = JsonSerializer.ToString<MeetingModel>(this);
-      StreamWriter strmWriter = new StreamWriter("C:\\Users\\mike\\Documents\\TI\\Meetings.json", true);
-      strmWriter.WriteLine(json);
-      strmWriter.Close();
+      //StreamWriter strmWriter = new StreamWriter("C:\\Users\\mike\\Documents\\TI\\Meetings.json", true);
+      //strmWriter.WriteLine(json);
+      //strmWriter.Close();
       //string firstLine = strmReader.ReadLine();
       //string line;
       //char[] delims = new char[] { ',' };

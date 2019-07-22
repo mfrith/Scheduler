@@ -14,7 +14,7 @@ namespace ScheduleUI
 {
   public class MeetingsViewModel : PropertyChangedBase
   {
-    private ObservableCollection<MeetingModel> _meetings;// = new ObservableCollection<MeetingModel>();
+    private ObservableCollection<MeetingModelBase> _meetings;// = new ObservableCollection<MeetingModel>();
     private ObservableCollection<MemberModel> _members = new ObservableCollection<MemberModel>();
     private ObservableCollection<MemberModel> _temporarymemberList;
 
@@ -185,13 +185,13 @@ namespace ScheduleUI
       set { SetProperty(ref _currentMeeting, value, () => CurrentMeeting); }
     }
 
-    private MeetingViewModel _newMeeting;
+    private MeetingModelRegularVM _newMeeting;
     public void GenerateMeeting()
     {
       var t = _members.Where(it => it.MemberID > 0 && it.Name != "Mike Frith");
       List<MemberModel> temp = t.ToList();
       _temporarymemberList = new ObservableCollection<MemberModel>(temp);
-      _newMeeting = new MeetingViewModel(MeetingDate, MeetingTemplate, _temporarymemberList);
+      _newMeeting = new MeetingModelRegularVM(MeetingDate, MeetingTemplate, _temporarymemberList);
       _newMeeting.Generate();
       CurrentMeeting = _newMeeting.ToList();
       _generateButtonEnabled = false;
@@ -212,7 +212,7 @@ namespace ScheduleUI
       get { return _showMeeting; }
       set { _showMeeting = value; }
     }
-    public ObservableCollection<MeetingModel> Meetings
+    public ObservableCollection<MeetingModelBase> Meetings
     {
       get { return _meetings; }
     }
@@ -221,63 +221,84 @@ namespace ScheduleUI
     private ObservableCollection<MeetingModelRegular> _meetingsRegular = null;
     public void Load()
     {
-      List<MeetingModel> theList = new List<MeetingModel>();
-      using (StreamReader strmReader = new StreamReader("C:\\Users\\mike\\Documents\\TI\\Meetings.dat"))//, FileMode.Open, FileAccess.Read))
+      //List<MeetingModel> theList = new List<MeetingModel>();
+      //using (StreamReader strmReader = new StreamReader("C:\\Users\\mike\\Documents\\TI\\Meetings.dat"))//, FileMode.Open, FileAccess.Read))
+      //{
+      //  //StreamReader strmReader = new StreamReader(fileStream);
+      //  string firstLine = strmReader.ReadLine();
+      //  string line;
+      //  char[] delims = new char[] { ',' };
+      //  while ((line = strmReader.ReadLine()) != null)
+      //  {
+      //    string[] pole = line.Split(delims, StringSplitOptions.None);
+      //    MeetingModel rcd = new MeetingModel(pole, ref _members);
+
+      //    theList.Add(rcd);
+      //    _listofmeetingids.Add(Int32.Parse(pole[0]));
+      //  }
+      //}
+
+      List<MeetingModelBase> theList = new List<MeetingModelBase>();
+      using (StreamReader strmReader = new StreamReader("C:\\Users\\mike\\Documents\\TI\\Meetings4.json"))//, FileMode.Open, FileAccess.Read))
       {
-        //StreamReader strmReader = new StreamReader(fileStream);
+        //var thefile = strmReader.ReadToEnd();
+        // var t = JsonSerializer.Parse<MeetingModelRegular>(thefile);
         string firstLine = strmReader.ReadLine();
-        string line;
-        char[] delims = new char[] { ',' };
-        while ((line = strmReader.ReadLine()) != null)
-        {
-          string[] pole = line.Split(delims, StringSplitOptions.None);
-          MeetingModel rcd = new MeetingModel(pole, ref _members);
-
-          theList.Add(rcd);
-          _listofmeetingids.Add(Int32.Parse(pole[0]));
-        }
+        MeetingModelBase bah = new MeetingModelBase();
+        bah.Deserialize(firstLine);
       }
 
-      using (StreamWriter strmWriter = new StreamWriter("C:\\Users\\mike\\Documents\\TI\\Meetings2.json", true))
-      {
-        theList.Sort((x, y) => DateTime.Compare(x.DayOfMeeting, y.DayOfMeeting));
-        theList.Reverse();
-        _meetings = new ObservableCollection<MeetingModel>(theList);
-        _meetingsRegular = new ObservableCollection<MeetingModelRegular>();
-        foreach (var meeting in _meetings)
-        {
+      //using (StreamWriter strmWriter = new StreamWriter("C:\\Users\\mike\\Documents\\TI\\Meetings5.json", true))
+      //{
+      //  //theList.Sort((x, y) => DateTime.Compare(x.DayOfMeeting, y.DayOfMeeting));
+      //  //theList.Reverse();
+      //  _meetings = new ObservableCollection<MeetingModel>(theList);
+      //  _meetingsRegular = new ObservableCollection<MeetingModelRegular>();
+      //  foreach (var meeting in _meetings)
+      //  {
 
-          MeetingModelRegular mreg = new MeetingModelRegular();
-          mreg.AhCounter = meeting.Ah?.Name;
-          //mreg.Attendees = meeting.Attendees.Select(it => it.ToString();
-          mreg.DayOfMeeting = meeting.DayOfMeeting.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture);
-          mreg.Evaluator1 = meeting.Evaluator1?.Name;
-          mreg.Evaluator2 = meeting.Evaluator2?.Name;
-          mreg.GeneralEvaluator = meeting.GeneralEvaluator?.Name;
-          mreg.Grammarian = meeting.Gram?.Name;
-          mreg.HotSeat = meeting.HotSeat?.Name;
-          mreg.MeetingType = meeting.MeetingType.ToString();
-          mreg.QuizMaster = meeting.Quiz?.Name;
-          mreg.Resolved = meeting.Resolved == true ? "1" : "0";
-          mreg.Speaker1 = meeting.Speaker1?.Name;
-          mreg.Speaker2 = meeting.Speaker2?.Name;
-          mreg.TableTopics = meeting.TT?.Name;
-          mreg.Timer = meeting.Timer?.Name;
-          mreg.Toastmaster = meeting.Toastmaster?.Name;
-          //mreg.TTContestants = meeting.TTContestants?.ToString();
-          mreg.TTWinner = meeting.TTWinner?.Name;
-          mreg.Video = meeting.Video?.Name;
-          _meetingsRegular.Add(mreg);
-          //var json = JsonSerializer.ToString<MeetingModelRegular>(mreg);
-          var t = mreg.Serialize(mreg);
-          strmWriter.WriteLine(t);
-        }
+      //    MeetingModelRegular mreg = new MeetingModelRegular();
+      //    mreg.AhCounter = meeting.Ah?.Name;
+      //    //mreg.Attendees = meeting.Attendees?.Select(it => it == ).ToList();
+      //    mreg.DayOfMeeting = meeting.DayOfMeeting.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture);
+      //    mreg.Evaluator1 = meeting.Evaluator1?.Name;
+      //    mreg.Evaluator2 = meeting.Evaluator2?.Name;
+      //    mreg.GeneralEvaluator = meeting.GeneralEvaluator?.Name;
+      //    mreg.Grammarian = meeting.Gram?.Name;
+      //    mreg.HotSeat = meeting.HotSeat?.Name;
+      //    mreg.MeetingType = meeting.MeetingType.ToString();
+      //    mreg.QuizMaster = meeting.Quiz?.Name;
+      //    mreg.Resolved = meeting.Resolved == true ? "1" : "0";
+      //    mreg.Speaker1 = meeting.Speaker1?.Name;
+      //    mreg.Speaker2 = meeting.Speaker2?.Name;
+      //    mreg.TableTopics = meeting.TT?.Name;
+      //    mreg.Timer = meeting.Timer?.Name;
+      //    mreg.Toastmaster = meeting.Toastmaster?.Name;
+      //    //mreg.TTContestants = meeting.TTContestants?.ToString();
+      //    mreg.TTWinner = meeting.TTWinner?.Name;
+      //    mreg.Video = meeting.Video?.Name;
+      //    mreg.ID = meeting.ID.ToString();
+      //    _meetingsRegular.Add(mreg);
+      //    //var json = JsonSerializer.ToString<MeetingModelRegular>(mreg);
+      //    var t = mreg.Serialize(mreg);
+      //    strmWriter.WriteLine(t);
+      //  }
+      //  //WriteMeetingToFile("C:\\Users\\mike\\Documents\\TI\\Meetings4.txt", _meetingsRegular[50]);
 
-        //strmWriter.Close();
-      }
+      //  strmWriter.Close();
+
+      //}
+
     }
 
-
+    private void WriteMeetingToFile(string path, MeetingModelBase meeting)
+    {
+      System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+      using (FileStream stream = new FileStream(path, FileMode.Append, FileAccess.Write))
+      {
+        formatter.Serialize(stream, meeting);
+      }
+    }
     public void Save()
     {
 

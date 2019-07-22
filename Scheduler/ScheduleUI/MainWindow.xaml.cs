@@ -19,14 +19,14 @@ namespace ScheduleUI
       this.DataContext = new MainViewModel();
       MainViewModel a = (MainViewModel)this.DataContext;
       MeetingsViewModel b = (MeetingsViewModel)a.Tabs[2];
-      ObservableCollection<MeetingModel> meetings = b.Meetings;
-      DateTime lastMeeting = meetings[0].DayOfMeeting;
-      bool resolved = meetings[0].Resolved;
+      ObservableCollection<MeetingModelBase> meetings = b.Meetings;
+      DateTime lastMeeting = DateTime.ParseExact(meetings[0].DayOfMeeting, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+      bool resolved = "1" == meetings[0].Resolved;
       if (!resolved)
       {
         // pop up view
         //MeetingViewModel currentMeeting = new MeetingViewModel(meetings[0]);
-        meetings[0].Resolved = true;
+        meetings[0].Resolved = "1";
       }
       //load data files?
       // does it exist? if not create it. if it does, load it.
@@ -44,8 +44,8 @@ namespace ScheduleUI
       DateTime now = DateTime.Today.Date;
       MainViewModel a = (MainViewModel)this.DataContext;
       MeetingsViewModel b = (MeetingsViewModel)a.Tabs[2];
-      ObservableCollection<MeetingModel> meetings = b.Meetings;
-      DateTime lastMeeting = meetings[0].DayOfMeeting;
+      ObservableCollection<MeetingModelBase> meetings = b.Meetings;
+      DateTime lastMeeting = DateTime.ParseExact(meetings[0].DayOfMeeting, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
 
       DayOfWeek dow = lastMeeting.DayOfWeek;
       if (dow == DayOfWeek.Friday) // last friday of the month?

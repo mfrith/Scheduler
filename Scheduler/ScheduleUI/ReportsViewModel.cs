@@ -5,13 +5,13 @@ namespace ScheduleUI
 {
   public class ReportsViewModel
   {
-    ObservableCollection<MeetingModel> _meetings;
-    public ReportsViewModel(System.Collections.ObjectModel.ObservableCollection<SchedulerUI.MeetingModel> meetings)
+    ObservableCollection<MeetingModelBase> _meetings;
+    public ReportsViewModel(System.Collections.ObjectModel.ObservableCollection<SchedulerUI.MeetingModelBase> meetings)
     {
       _meetings = meetings;
     }
 
-    public ObservableCollection<MeetingModel> Meetings
+    public ObservableCollection<MeetingModelBase> Meetings
     {
       get { return _meetings; }
     }
