@@ -15,21 +15,21 @@ namespace ScheduleUI
   public class MeetingsViewModel : PropertyChangedBase
   {
     private ObservableCollection<MeetingModelBase> _meetings;// = new ObservableCollection<MeetingModel>();
-    private ObservableCollection<MemberModel> _members = new ObservableCollection<MemberModel>();
-    private ObservableCollection<MemberModel> _temporarymemberList;
+    private List<MemberModel> _members = new List<MemberModel>();
+    private List<MemberModel> _temporarymemberList;
 
     List<string> regularTemplate = new List<string>(new string[] {"Toastmaster","Speaker 1","Speaker 2","General Evaluator",
                                                                   "Evaluator 1", "Evaluator 2", "Table Topics", "Ah Counter",
                                                                   "Timer", "Grammarian", "Quiz Master", "Video", "Hot Seat" });
 
-    //List<string> threeSpeakerTemplate = new List<string>(new string[] {"Toastmaster","Speaker 1","Speaker 2", "Speaker 3", "General Evaluator",
-    //                                                              "Evaluator 1", "Evaluator 2", "Evaluator 3", "Ah Counter",
-    //                                                              "Timer", "Grammarian", "Quiz Master", "Video", "Hot Seat" });
+    List<string> threeSpeakerTemplate = new List<string>(new string[] {"Toastmaster","Speaker 1","Speaker 2", "Speaker 3", "General Evaluator",
+                                                                  "Evaluator 1", "Evaluator 2", "Evaluator 3", "Ah Counter",
+                                                                  "Timer", "Grammarian", "Quiz Master", "Video", "Hot Seat" });
 
-    //List<string> speakathonTemplate = new List<string>(new string[] {"Toastmaster","Speaker 1","Speaker 2", "Speaker 3", "Speaker 4",
-    //                                                              "Speaker 5", "General Evaluator", "Evaluator 1", "Evaluator 2", "Evaluator 3",
-    //                                                              "Evaluator 4", "Evaluator 5", "Ah Counter",
-    //                                                              "Timer", "Grammarian", "Quiz Master", "Video", "Hot Seat" });
+    List<string> speakathonTemplate = new List<string>(new string[] {"Toastmaster","Speaker 1","Speaker 2", "Speaker 3", "Speaker 4",
+                                                                  "Speaker 5", "General Evaluator", "Evaluator 1", "Evaluator 2", "Evaluator 3",
+                                                                  "Evaluator 4", "Evaluator 5", "Ah Counter",
+                                                                  "Timer", "Grammarian", "Quiz Master", "Video", "Hot Seat" });
 
     //private static readonly KeyValuePair<string, string>[] meetingTemplates =
     //{
@@ -50,6 +50,13 @@ namespace ScheduleUI
       get { return _meetingDate; }
       set { _meetingDate = value; }
     }
+
+    private bool _generateForMonth = true;
+    public bool GenerateForMonth
+    {
+      get { return _generateForMonth; }
+      set { _generateForMonth = value; }
+    }
     private List<string> _meetingTemplates = new List<string>(new string[] { "Regular Meeting", "Three Speaker Meeting", "Speakathon" });
     public List<string> MeetingTemplates
     {
@@ -63,12 +70,12 @@ namespace ScheduleUI
     {
       get { return regularTemplate; }
     }
-    private string _meetingTemplate;
+    private string _meetingTemplate = "Regular Meeting";
     public string MeetingTemplate
     {
       get
       {
-        return "regular meeting";
+        return _meetingTemplate;
       }
 
       set
@@ -76,6 +83,10 @@ namespace ScheduleUI
         _meetingTemplate = value;
       }
     }
+
+    //          <ComboBox DockPanel.Dock="Left" ItemsSource="{Binding MeetingTemplateEnumValues}" SelectedIndex="0" SelectedItem="{Binding MeetingTemplateEnum}"/>
+
+    //public MeetingTypeEnum
     public MeetingsViewModel()
     {
 
@@ -172,7 +183,7 @@ namespace ScheduleUI
       _generateButtonEnabled = true;
       _roleListVisible = false;
       List<MemberModel> temp = _members.ToList();
-      _temporarymemberList = new ObservableCollection<MemberModel>(temp);
+      _temporarymemberList = new List<MemberModel>(temp);
       NotifyPropertyChanged(() => RoleListVisible);
       NotifyPropertyChanged(() => GenerateButtonEnabled);
       NotifyPropertyChanged(() => ResetButtonEnabled);
@@ -188,20 +199,41 @@ namespace ScheduleUI
     private MeetingModelRegularVM _newMeeting;
     public void GenerateMeeting()
     {
-      var t = _members.Where(it => it.MemberID > 0 && it.Name != "Mike Frith");
+      //_meetingDate
+      var a = _meetingTemplate;
+      var b = _meetingDate;
+
+      // this won't work the way I want it to.
+      //MeetingModelBase c = new MeetingModelBase(MeetingTemplate, MeetingDate);
+      // need to create class depending on template specified
+
+      if (MeetingTemplate == )
+      var t = _members.Where(it => it.IsCurrentMember == true);
+      //t = _members.Where(it => it.Name != "Lisa Winn");
       List<MemberModel> temp = t.ToList();
-      _temporarymemberList = new ObservableCollection<MemberModel>(temp);
-      _newMeeting = new MeetingModelRegularVM(MeetingDate, MeetingTemplate, _temporarymemberList);
-      _newMeeting.Generate();
-      CurrentMeeting = _newMeeting.ToList();
-      _generateButtonEnabled = false;
-      _roleListVisible = true;
-      NotifyPropertyChanged(() => RoleListVisible);
-      NotifyPropertyChanged(() => GenerateButtonEnabled);
-      NotifyPropertyChanged(() => ResetButtonEnabled);
+      _temporarymemberList = new List<MemberModel>(temp);
+      if (GenerateForMonth)
+      {
+        // generate one meeting at a time and show on pane
+        // write them out when okayed, then show the next one
+        _newMeeting = new MeetingModelRegularVM(_temporarymemberList);
+        _newMeeting.Generate();
+
+      }
+      else
+      {
+        _newMeeting = new MeetingModelRegularVM(MeetingDate.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture), MeetingTemplate, _temporarymemberList);
+        _newMeeting.Generate();
+        CurrentMeeting = _newMeeting.ToList();
+        _generateButtonEnabled = false;
+        _roleListVisible = true;
+        NotifyPropertyChanged(() => RoleListVisible);
+        NotifyPropertyChanged(() => GenerateButtonEnabled);
+        NotifyPropertyChanged(() => ResetButtonEnabled);
+      }
       return;
     }
-    public MeetingsViewModel(ObservableCollection<MemberModel> members)
+    public MeetingsViewModel(List<MemberModel> members)
     {
       _members = members;
     }
@@ -242,10 +274,18 @@ namespace ScheduleUI
       using (StreamReader strmReader = new StreamReader("C:\\Users\\mike\\Documents\\TI\\Meetings4.json"))//, FileMode.Open, FileAccess.Read))
       {
         //var thefile = strmReader.ReadToEnd();
-        // var t = JsonSerializer.Parse<MeetingModelRegular>(thefile);
-        string firstLine = strmReader.ReadLine();
-        MeetingModelBase bah = new MeetingModelBase();
-        bah.Deserialize(firstLine);
+        var t = new List<MeetingModelBase>();
+        string meeting; 
+        while ((meeting = strmReader.ReadLine()) != null)
+        {
+          MeetingModelBase bah = new MeetingModelBase();
+          var a = bah.Deserialize(meeting);
+          t.Add(a);
+        }
+
+        t.Reverse();
+        _meetings = new ObservableCollection<MeetingModelBase>(t);
+
       }
 
       //using (StreamWriter strmWriter = new StreamWriter("C:\\Users\\mike\\Documents\\TI\\Meetings5.json", true))
@@ -301,7 +341,33 @@ namespace ScheduleUI
     }
     public void Save()
     {
+      if (File.Exists("C:\\Users\\mike\\Documents\\TI\\Meetings.json"))
+      {
+        //File.Delete("C:\\Users\\mike\\Documents\\TI\\MembersStatus.json");
 
+      }
+      using (StreamWriter strmWriter = new StreamWriter("C:\\Users\\mike\\Documents\\TI\\Meetings2.json"))
+      {
+        // write out all objects(members)
+        string meeting = string.Empty;
+        foreach (var m in _meetings)
+        {
+          meeting = m.Serialize(m);
+          strmWriter.WriteLine(meeting);
+        }
+
+        //var thefile = strmReader.ReadToEnd();
+        var t = new List<MeetingModelBase>();
+        
+          MeetingModelBase bah = new MeetingModelBase();
+          var a = bah.Deserialize(meeting);
+          t.Add(a);
+       
+
+        t.Reverse();
+        _meetings = new ObservableCollection<MeetingModelBase>(t);
+
+      }
     }
 
     private bool _generateButtonVisibility = false;

@@ -59,7 +59,7 @@ namespace ScheduleUI
       var t = this.Members;
       var Members = (MembersViewModel)a.Tabs[1];
       //List<MemberModel> members = Members.MemberList;
-      ObservableCollection<MemberModel> members = Members.Members;
+      List<MemberModel> members = Members.Members;
       DateTime dayofmeeting = now;
       var s1 = members.OrderBy(m => m.Speaker).First();
       members.Remove(s1);

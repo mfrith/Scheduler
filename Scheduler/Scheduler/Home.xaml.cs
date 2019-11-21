@@ -42,7 +42,7 @@ namespace Scheduler
         theMember.MemberID = (int)rowMember.ItemArray[1];
         theMember.Name = rowMember.ItemArray[2].ToString();
 
-        if (theMember.Name == "Mike Frith" || theMember.Name == "Nabil Rasool" || theMember.Name == "Wes Jones" || theMember.Name == "Rebecca Lehman" || theMember.Name == "Uma Harano")
+        if (theMember.Name == "Mike Frith" || theMember.Name == "Lisa Winn")
             continue;
 
         if (!System.DBNull.Value.Equals(rowMember.ItemArray[3]))
@@ -105,22 +105,22 @@ namespace Scheduler
       // then I can just pull the meetings missed in DateTime format
 
       //DateTime today = DateTime.Today;
-      DateTime a = new DateTime(2018, 11, 1);
-      int daysUntilFirstWednesday = ((int)DayOfWeek.Wednesday - (int)a.DayOfWeek + 7) % 7;
-      DateTime b = a.AddDays(daysUntilFirstWednesday);
-      DateTime d = a.AddDays(daysUntilFirstWednesday + 7);
-      DateTime f = a.AddDays(daysUntilFirstWednesday + 14);
-      DateTime g = a.AddDays(daysUntilFirstWednesday + 21);
-      DateTime h = a.AddDays(daysUntilFirstWednesday + 28);
-      var daysinmonth = DateTime.DaysInMonth(2018, 11);
-      DateTime c = new DateTime(2018, 11, daysinmonth);
-      DayOfWeek r = c.DayOfWeek;
+      //DateTime a = new DateTime(2018, 11, 1);
+      //int daysUntilFirstWednesday = ((int)DayOfWeek.Wednesday - (int)a.DayOfWeek + 7) % 7;
+      //DateTime b = a.AddDays(daysUntilFirstWednesday);
+      //DateTime d = a.AddDays(daysUntilFirstWednesday + 7);
+      //DateTime f = a.AddDays(daysUntilFirstWednesday + 14);
+      //DateTime g = a.AddDays(daysUntilFirstWednesday + 21);
+      //DateTime h = a.AddDays(daysUntilFirstWednesday + 28);
+      //var daysinmonth = DateTime.DaysInMonth(2018, 11);
+      //DateTime c = new DateTime(2018, 11, daysinmonth);
+      //DayOfWeek r = c.DayOfWeek;
       //if (h >= c)
       //{
       //  string t = "don't add to array";
       //}
 
-      MeetingModel one = new MeetingModel();
+      //MeetingModel one = new MeetingModel();
       //DataSet dsMembers = new DataSet();
       //SqlDataAdapter daMembers = new SqlDataAdapter("select * from Members where memberID > 0", conn);
       //daMembers.Fill(dsMembers);
@@ -182,8 +182,8 @@ namespace Scheduler
       //  members.Add(theMember);
       //}
       GetMembers(ref members);
-      List<DateTime> meetings = GetMonthlyMeetings(new DateTime(2019, 7, 3));
-      int NumberOfMeetings = 5;//  meetings.Count;
+      List<DateTime> meetings = GetMonthlyMeetings(new DateTime(2019, 10, 2));
+      int NumberOfMeetings = 6;//  meetings.Count;
       List<MemberModel> speakers = GetRoles(members, NumberOfMeetings, "speaker");
       List<string> snames = new List<string>();
       foreach (var s in speakers)
@@ -336,33 +336,33 @@ namespace Scheduler
 
       using (StreamWriter file = new StreamWriter("C:\\Users\\mike\\Documents\\TI\\MeetingsNext.csv"))
       {
-        string dates = "Role, July3, July 17, July 24, July 26, July 31";
+        string dates = "Role, Oct 2, Oct 9, Oct 16, Oct 23, Oct 25, Oct 30";
         file.WriteLine(dates);
-        string row1 = "Toastmaster," + tnames[0] + "," + tnames[1] + "," + tnames[2] + "," + tnames[3] + "," + tnames[4];// + "," + tnames[5];
+        string row1 = "Toastmaster," + tnames[0] + "," + tnames[1] + "," + tnames[2] + "," + tnames[3] + "," + tnames[4] + "," + tnames[5];
         file.WriteLine(row1);
-        row1 = "Speaker 1," + snames[0] + "," + snames[2] + "," + snames[4] + "," + snames[6] + "," + snames[8];// + "," + snames[10];
+        row1 = "Speaker 1," + snames[0] + "," + snames[2] + "," + snames[4] + "," + snames[6] + "," + snames[8] + "," + snames[10];
         file.WriteLine(row1);
-        row1 = "Speaker 2," + snames[1] + "," + snames[3] + "," + snames[5] + "," + snames[7] + "," + snames[9];// + "," + snames[11];
+        row1 = "Speaker 2," + snames[1] + "," + snames[3] + "," + snames[5] + "," + snames[7] + "," + snames[9] + "," + snames[11];
         file.WriteLine(row1);
-        row1 = "GE," + gnames[0] + "," + gnames[1] + "," + gnames[2] + "," + gnames[3] + "," + gnames[4];// + "," + gnames[5];
+        row1 = "GE," + gnames[0] + "," + gnames[1] + "," + gnames[2] + "," + gnames[3] + "," + gnames[4] + "," + gnames[5];
         file.WriteLine(row1);
-        row1 = "Eval 1," + enames[0] + "," + enames[2] + "," + enames[4] + "," + enames[6] + "," + enames[8];// + "," + enames[10];
+        row1 = "Eval 1," + enames[0] + "," + enames[2] + "," + enames[4] + "," + enames[6] + "," + enames[8] + "," + enames[10];
         file.WriteLine(row1);
-        row1 = "Eval 2," + enames[1] + "," + enames[3] + "," + enames[5] + "," + enames[7] + "," + enames[9];// + "," + enames[11];
+        row1 = "Eval 2," + enames[1] + "," + enames[3] + "," + enames[5] + "," + enames[7] + "," + enames[9] + "," + enames[11];
         file.WriteLine(row1);
-        row1 = "TT," + ttnames[0] + "," + ttnames[1] + "," + ttnames[2] + "," + ttnames[3] + "," + tnames[4];// + "," + tnames[5];
+        row1 = "TT," + ttnames[0] + "," + ttnames[1] + "," + ttnames[2] + "," + ttnames[3] + "," + tnames[4] + "," + tnames[5];
         file.WriteLine(row1);
-        row1 = "Ah ," + ahnames[0] + "," + ahnames[1] + "," + ahnames[2] + "," + ahnames[3] + "," + ahnames[4];// + "," + ahnames[5];
+        row1 = "Ah ," + ahnames[0] + "," + ahnames[1] + "," + ahnames[2] + "," + ahnames[3] + "," + ahnames[4] + "," + ahnames[5];
         file.WriteLine(row1);
-        row1 = "Timer," + timernames[0] + "," + timernames[1] + "," + timernames[2] + "," + timernames[3] + "," + timernames[4];// + "," + timernames[5];
+        row1 = "Timer," + timernames[0] + "," + timernames[1] + "," + timernames[2] + "," + timernames[3] + "," + timernames[4] + "," + timernames[5];
         file.WriteLine(row1);
-        row1 = "Gram," + grnames[0] + "," + grnames[1] + "," + grnames[2] + "," + grnames[3] + "," + grnames[4];// + "," + grnames[5];
+        row1 = "Gram," + grnames[0] + "," + grnames[1] + "," + grnames[2] + "," + grnames[3] + "," + grnames[4] + "," + grnames[5];
         file.WriteLine(row1);
-        row1 = "Quiz," + quiznames[0] + "," + quiznames[1] + "," + quiznames[2] + "," + quiznames[3] + "," + quiznames[4];// + "," + quiznames[5];
+        row1 = "Quiz," + quiznames[0] + "," + quiznames[1] + "," + quiznames[2] + "," + quiznames[3] + "," + quiznames[4] + "," + quiznames[5];
         file.WriteLine(row1);
-        row1 = "Video," + videonames[0] + "," + videonames[1] + "," + videonames[2] + "," + videonames[3] + "," + videonames[4];// + "," + videonames[5];
+        row1 = "Video," + videonames[0] + "," + videonames[1] + "," + videonames[2] + "," + videonames[3] + "," + videonames[4] + "," + videonames[5];
         file.WriteLine(row1);
-        row1 = "HS," + hnames[0] + "," + hnames[1] + "," + hnames[2] + "," + hnames[3] + "," + hnames[4];// + "," + hnames[5];
+        row1 = "HS," + hnames[0] + "," + hnames[1] + "," + hnames[2] + "," + hnames[3] + "," + hnames[4] + "," + hnames[5];
         file.WriteLine(row1);
 
       }

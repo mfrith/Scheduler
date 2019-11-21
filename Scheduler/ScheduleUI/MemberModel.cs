@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+//using Newtonsoft.Json;
 
 namespace SchedulerUI
 {
+  [Serializable]
+
   public class MemberModel
   {
     public int MemberID { get; set; }
@@ -24,12 +30,179 @@ namespace SchedulerUI
     public bool CanBeEvaluator { get; set; }
     public List<int> MeetingsOut { get; set; }
     public List<string> Mentors { get; set; }
-
+    public bool IsCurrentMember { get; set; }
     public MemberModel()
     {
 
     }
 
+    public MemberModel Deserialize(string json)
+    {
+      var options = new JsonSerializerOptions
+      {
+        AllowTrailingCommas = true
+      };
+
+      byte[] data = Encoding.UTF8.GetBytes(json);
+      Utf8JsonReader reader = new Utf8JsonReader(data, isFinalBlock: true, state: default);
+      string propertyName = string.Empty;
+      MemberModel member = new MemberModel();
+      //MemberModel member = JsonConvert.DeserializeObject<MemberModel>(json);
+      //reader.Read(); reader.Read();
+      //var name = reader.GetString();
+      //var a = reader.TokenType;
+      //reader.Read();
+      //var memberID = reader.GetUInt32();
+
+      while (reader.Read())
+      {
+        switch (reader.TokenType)
+        {
+          case JsonTokenType.PropertyName:
+            {
+              propertyName = reader.GetString();
+              break;
+            }
+          case JsonTokenType.String:
+            {
+              string value = reader.GetString();
+
+              if (propertyName == "Name")
+              {
+                member.Name = value;
+                break;
+              }
+
+              if (propertyName == "Toastmaster" || propertyName == "Speaker" || propertyName == "Evaluator" || propertyName == "GeneralEvaluator" ||
+                  propertyName == "TT" || propertyName == "Ah" || propertyName == "Gram" || propertyName == "Timer" || propertyName == "Quiz" ||
+                  propertyName == "Video" || propertyName == "HotSeat")
+              {
+                var date = DateTime.ParseExact(value, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                member.GetType().GetProperty(propertyName).SetValue(member, date, null);
+                break;
+
+              }
+              break;
+            }
+          case JsonTokenType.Number:
+            {
+              int value = reader.GetInt32();
+              if (propertyName == "MemberID")
+              {
+                member.MemberID = value;
+                break;
+              }
+              break;
+            }
+          case JsonTokenType.True:
+          case JsonTokenType.False:
+            {
+              if (propertyName == "CanBeEvaluator" || propertyName == "CanBeToastmaster" || propertyName == "HasBeenOfficer" || propertyName == "IsCurrentMember")
+              {
+                bool value = reader.GetBoolean();
+                member.GetType().GetProperty(propertyName).SetValue(member, value, null);
+                break;
+              }
+              break;
+            }
+          case JsonTokenType.StartArray:
+            {
+              if (propertyName == "MeetingsOut")
+              {
+                reader.Read();
+                member.MeetingsOut = new List<int>();
+                while (reader.TokenType != JsonTokenType.EndArray)
+                {
+                  member.MeetingsOut.Add(reader.GetInt32());
+                  reader.Read();
+                }
+
+                break;
+              }
+              else if (propertyName == "Mentors")
+              {
+                reader.Read();
+                member.Mentors = new List<string>();
+                while (reader.TokenType != JsonTokenType.EndArray)
+                {
+                  member.Mentors.Add(reader.GetString());
+                  reader.Read();
+                }
+
+                break;
+              }
+              break;
+            }
+        }
+
+      }
+
+      if (member.Name == "Lisa Winn" || member.Name == "Mani Vijayakumar")
+        member.IsCurrentMember = false;
+      else
+        member.IsCurrentMember = true;
+      return member;
+
+    }
+    public string Serialize(MemberModel member)
+    {
+      string strMember = string.Empty;
+
+      //var options = new JsonWriterOptions
+      //{
+      //  Indented = true
+      //};
+
+      using (var stream = new System.IO.MemoryStream())
+      {
+        using (var writer = new Utf8JsonWriter(stream))//, options))
+        {
+          writer.WriteStartObject();
+          writer.WriteString("Name", member.Name);
+          writer.WriteNumber("MemberID", member.MemberID);
+          writer.WriteString("Toastmaster", member.Toastmaster.ToString("MM-dd-yyyy"));
+          writer.WriteString("Speaker", member.Speaker.ToString("MM-dd-yyyy"));
+          writer.WriteString("GeneralEvaluator", member.GeneralEvaluator.ToString("MM-dd-yyyy"));
+          writer.WriteString("Evaluator", member.Evaluator.ToString("MM-dd-yyyy"));
+          writer.WriteString("TT", member.TT.ToString("MM-dd-yyyy"));
+          writer.WriteString("Ah", member.Ah.ToString("MM-dd-yyyy"));
+          writer.WriteString("Gram", member.Gram.ToString("MM-dd-yyyy"));
+          writer.WriteString("Timer", member.Timer.ToString("MM-dd-yyyy"));
+          writer.WriteString("Quiz", member.Quiz.ToString("MM-dd-yyyy"));
+          writer.WriteString("Video", member.Video.ToString("MM-dd-yyyy"));
+          writer.WriteString("HotSeat", member.HotSeat.ToString("MM-dd-yyyy"));
+          writer.WriteBoolean("HasBeenOfficer", member.HasBeenOfficer);
+          writer.WriteBoolean("CanBeToastmaster", member.CanBeToastmaster);
+          writer.WriteBoolean("CanBeEvaluator", member.CanBeEvaluator);
+          if (MeetingsOut != null)
+          {
+            writer.WriteStartArray("MeetingsOut");
+            foreach (var m in MeetingsOut)
+            {
+              writer.WriteNumberValue(m);
+            }
+            writer.WriteEndArray();
+          }
+
+          if (Mentors != null)
+          {
+            writer.WriteStartArray("Mentors");
+            foreach (var m in Mentors)
+            {
+              writer.WriteStringValue(m);
+            }
+            writer.WriteEndArray();
+          }
+
+          writer.WriteBoolean("IsCurrentMember", member.IsCurrentMember);
+
+          writer.WriteEndObject();
+
+        }
+        strMember = Encoding.UTF8.GetString(stream.ToArray());
+      }
+      return strMember;
+    }
     public MemberModel(string[] record)
     {
       MemberID = System.Int32.Parse(record[1]);
@@ -46,7 +219,7 @@ namespace SchedulerUI
       if (!string.IsNullOrEmpty(record[10])) Timer = System.DateTime.Parse(record[10]);
       if (!string.IsNullOrEmpty(record[11])) Quiz = System.DateTime.Parse(record[11]);
       if (!string.IsNullOrEmpty(record[12])) Video = System.DateTime.Parse(record[12]);
-      if (!string.IsNullOrEmpty(record[13]))  HotSeat = System.DateTime.Parse(record[13]);
+      if (!string.IsNullOrEmpty(record[13])) HotSeat = System.DateTime.Parse(record[13]);
       if (!string.IsNullOrEmpty(record[14]))
         HasBeenOfficer = System.Boolean.Parse(record[14]);
       else

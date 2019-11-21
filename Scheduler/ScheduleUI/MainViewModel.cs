@@ -1,5 +1,6 @@
 ﻿using SchedulerUI;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -18,7 +19,7 @@ namespace ScheduleUI
       MeetingsViewModel meetingsVM = new MeetingsViewModel(membersVM.Members);
       meetingsVM.Load();
       
-      ReportsViewModel reportsVM = new ReportsViewModel(meetingsVM.Meetings);
+      ReportsViewModel reportsVM = new ReportsViewModel(meetingsVM.Meetings.ToList(), membersVM.Members);
       
       _tabs.Add(generalVM);
       _tabs.Add(membersVM);
@@ -27,19 +28,25 @@ namespace ScheduleUI
 
       DateTime today = DateTime.Today.Date;
       ObservableCollection<MeetingModelBase> meetings = meetingsVM.Meetings;
-      var meetingsToResolve = meetings.Where(it => it.Resolved == "yes");
+      List<MeetingModelBase> meetingsToResolve = new List<MeetingModelBase>();
+      foreach (MeetingModelBase mtg in meetings)
+      {
+        if (mtg.Resolved == "0" || mtg.Resolved == null)
+          meetingsToResolve.Add(mtg);
+      }
+      //var meetingsToResolve = meetings.Where(it => it.Resolved == "0").Select(it => it).ToList();
       if (meetingsToResolve.Count() > 0)
       {
-        var meetingsR = meetingsToResolve.OrderBy(it => it.DayOfMeeting);
+        //var meetingsR = meetingsToResolve.OrderBy
 
-        foreach(var meeting in meetingsR)
-        {
-          DateTime dom = DateTime.ParseExact(meeting.DayOfMeeting, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
-          if (dom < today )
-          {
+        //foreach(var meeting in meetingsR)
+        //{
+        //  DateTime dom = DateTime.ParseExact(meeting.DayOfMeeting, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+        //  if (dom < today )
+        //  {
 
-          }
-        }
+        //  }
+        //}
       }
 
       DateTime lastMeeting = DateTime.ParseExact(meetings[0].DayOfMeeting, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);

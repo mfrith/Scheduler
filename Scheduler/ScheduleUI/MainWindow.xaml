@@ -10,6 +10,71 @@
         Title="Club Scheduler" Height="450" Width="800">
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="Bool2Vis" />
+    <DataTemplate x:Key="RegularTemplate">
+      <DataGrid ItemsSource="{Binding Meetings}" AutoGenerateColumns="False" >
+        <DataGrid.LayoutTransform>
+          <TransformGroup>
+            <RotateTransform Angle="90"/>
+            <MatrixTransform Matrix="-1,0,0,1,0,0"></MatrixTransform>
+          </TransformGroup>
+        </DataGrid.LayoutTransform>
+        <DataGrid.ColumnHeaderStyle>
+          <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+            <Setter Property="LayoutTransform">
+              <Setter.Value>
+                <TransformGroup>
+                  <RotateTransform Angle="-90"/>
+                  <ScaleTransform ScaleX="1" ScaleY="-1"/>
+                </TransformGroup>
+              </Setter.Value>
+            </Setter>
+          </Style>
+        </DataGrid.ColumnHeaderStyle>
+        <DataGrid.CellStyle>
+          <Style TargetType="DataGridCell">
+            <Setter Property="LayoutTransform">
+              <Setter.Value>
+                <TransformGroup>
+                  <RotateTransform Angle="-90"/>
+                  <ScaleTransform ScaleX="1" ScaleY="-1"/>
+                </TransformGroup>
+              </Setter.Value>
+            </Setter>
+          </Style>
+        </DataGrid.CellStyle>
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="DayOfMeeting" Binding="{Binding Path=DayOfMeeting, StringFormat=d}"/>
+          <DataGridTextColumn Header="Toastmaster" Binding="{Binding Path=Toastmaster.Name}"/>
+          <DataGridTextColumn Header="Speaker 1" Binding="{Binding Path=Speaker1.Name}"/>
+          <DataGridTextColumn Header="Speaker 2" Binding="{Binding Path=Speaker2.Name}"/>
+          <DataGridTextColumn Header="GE" Binding="{Binding Path=GeneralEvaluator.Name}"/>
+          <DataGridTextColumn Header="Evaluator 1" Binding="{Binding Path=Evaluator1.Name}"/>
+          <DataGridTextColumn Header="Evaluator 2" Binding="{Binding Path=Evaluator2.Name}"/>
+          <DataGridTextColumn Header="TT" Binding="{Binding Path=TT.Name}"/>
+          <DataGridTextColumn Header="Ah" Binding="{Binding Path=Ah.Name}"/>
+          <DataGridTextColumn Header="Gram" Binding="{Binding Path=Gram.Name}"/>
+          <DataGridTextColumn Header="Timer" Binding="{Binding Path=Timer.Name}"/>
+          <DataGridTextColumn Header="Quiz" Binding="{Binding Path=Quiz.Name}"/>
+          <DataGridTextColumn Header="Video" Binding="{Binding Path=Video.Name}"/>
+          <DataGridTextColumn Header="HotSeat" Binding="{Binding Path=HotSeat.Name}"/>
+          <!--public List
+              <int>Attendees { get; set; }
+    public MemberModel TTWinner { get; set; }
+    public List
+                <int>TTContestants { get; set; }-->
+          <!--<DataGridTextColumn Header="Day of Meeting"/>-->
+        </DataGrid.Columns>
+      </DataGrid>
+    </DataTemplate>
+    <DataTemplate x:Key="MemberInfo">
+      <StackPanel>
+      <CheckBox Content="Is Current" IsChecked="{Binding IsCurrent, Mode=TwoWay}"/>
+      <CheckBox Content="Can be Toastmaster" IsChecked="{Binding CanBeToastmaster, Mode=TwoWay}"/>
+      <CheckBox Content="Can Be Evaluator" IsChecked="{Binding CanBeEvaluator, Mode=TwoWay}"/>
+      <!--<CheckBox Content="Is Current" IsChecked="{Binding IsCurrent, Mode=TwoWay}"/>
+      <CheckBox Content="Is Current" IsChecked="{Binding IsCurrent, Mode=TwoWay}"/>-->
+      </StackPanel>
+    </DataTemplate>
   </Window.Resources>
   <DockPanel>
    
@@ -21,7 +86,23 @@
       <TabItem Name="Members" Header="Members" DataContext="{Binding Tabs[1]}">
         <StackPanel>
           <TextBlock Margin="10" FontSize="14">Member Information</TextBlock>
-          <Button Margin="10" Width="100" Height="25" HorizontalAlignment="Left"  >New Member</Button>
+          <DockPanel HorizontalAlignment="Left" LastChildFill="False">
+            <Button Margin="10" Width="100" Height="25" HorizontalAlignment="Left"  >New Member</Button>
+            <Button Margin="10" Width="100" Height="25" Content="Save" Command="{Binding SaveMembersCmd}"/>
+          </DockPanel>
+          <DockPanel HorizontalAlignment="Left" LastChildFill="False">
+            <ComboBox Margin="10" Width="150" Height="25" HorizontalAlignment="Left" 
+                    ItemsSource="{Binding Members}" DisplayMemberPath="Name" SelectedValuePath="Name"
+                      SelectedValue="{Binding MemberToEdit}"/>
+
+            <Button Margin="10" Width="100" Height="25" HorizontalAlignment="Left" Command="{Binding EditMemberCmd}">Edit Member</Button>
+          </DockPanel>
+          <StackPanel HorizontalAlignment="Left">
+
+            <CheckBox Content="Is Current" IsChecked="{Binding IsCurrent, Mode=TwoWay}"/>
+            <CheckBox Content="Can be Toastmaster" IsChecked="{Binding CanBeToastmaster, Mode=TwoWay}"/>
+            <CheckBox Content="Can Be Evaluator" IsChecked="{Binding CanBeEvaluator, Mode=TwoWay}"/>
+          </StackPanel>
         </StackPanel>
         
       </TabItem>
@@ -57,6 +138,7 @@
                       />-->
             <ComboBox DockPanel.Dock="Left" ItemsSource="{Binding MeetingTemplates}" SelectedIndex="0" SelectedItem="{Binding MeetingTemplate}"/>
             <DatePicker DockPanel.Dock="Left" SelectedDate="{Binding MeetingDate, Mode=TwoWay}" Margin="20, 0,0,0"/>
+            <CheckBox DockPanel.Dock="Left" Margin="20,5,0,0" IsChecked="{Binding GenerateForMonth, Mode=TwoWay}" Content="Generate for the month"/>
           </DockPanel>
           <DockPanel HorizontalAlignment="Left" LastChildFill="False">
             <Button Margin="10" Width="130" Height="25" HorizontalAlignment="Left" Command="{Binding GenerateMeetingCmd}" Content="Generate Meeting" 
@@ -65,7 +147,7 @@
                     Margin="10" Width="70" Height="25" IsEnabled="{Binding ResetButtonEnabled}" />
             <Button Name="clearBtn" Content="Clear" Command="{Binding ClearCmd}"
                     Margin="10" Width="70" Height="25" IsEnabled="{Binding ResetButtonEnabled}" />
-            <Button Name="okBtn" Content="Ok" Command="{Binding OKCmd}"
+            <Button Name="okBtn" Content="Save" Command="{Binding OKCmd}"
                     Margin="10" Width="70" Height="25" IsEnabled="{Binding ResetButtonEnabled}" />
           </DockPanel>
           <DockPanel LastChildFill="False" HorizontalAlignment="Left">
@@ -142,7 +224,7 @@
 
       </TabItem>
       <TabItem Name="Reports" Header="Reports" DataContext="{Binding Tabs[3]}">
-        <DataGrid ItemsSource="{Binding Meetings}" AutoGenerateColumns="False" >
+        <!--<DataGrid ItemsSource="{Binding Meetings}" AutoGenerateColumns="False" >
           <DataGrid.LayoutTransform>
             <TransformGroup>
               <RotateTransform Angle="90"/>
@@ -175,27 +257,33 @@
           </DataGrid.CellStyle>
           <DataGrid.Columns>
             <DataGridTextColumn Header="DayOfMeeting" Binding="{Binding Path=DayOfMeeting, StringFormat=d}"/>
-            <DataGridTextColumn Header="Toastmaster" Binding="{Binding Path=Toastmaster.Name}"/>
-            <DataGridTextColumn Header="Speaker 1" Binding="{Binding Path=Speaker1.Name}"/>
-            <DataGridTextColumn Header="Speaker 2" Binding="{Binding Path=Speaker2.Name}"/>
-            <DataGridTextColumn Header="GE" Binding="{Binding Path=GeneralEvaluator.Name}"/>
-            <DataGridTextColumn Header="Evaluator 1" Binding="{Binding Path=Evaluator1.Name}"/>
-            <DataGridTextColumn Header="Evaluator 2" Binding="{Binding Path=Evaluator2.Name}"/>
-            <DataGridTextColumn Header="TT" Binding="{Binding Path=TT.Name}"/>
-            <DataGridTextColumn Header="Ah" Binding="{Binding Path=Ah.Name}"/>
-            <DataGridTextColumn Header="Gram" Binding="{Binding Path=Gram.Name}"/>
-            <DataGridTextColumn Header="Timer" Binding="{Binding Path=Timer.Name}"/>
-            <DataGridTextColumn Header="Quiz" Binding="{Binding Path=Quiz.Name}"/>
-            <DataGridTextColumn Header="Video" Binding="{Binding Path=Video.Name}"/>
-            <DataGridTextColumn Header="HotSeat" Binding="{Binding Path=HotSeat.Name}"/>
-            <!--public List
+            <DataGridTextColumn Header="Toastmaster" Binding="{Binding Path=Toastmaster}"/>
+            <DataGridTextColumn Header="Speaker 1" Binding="{Binding Path=Speaker1}"/>
+            <DataGridTextColumn Header="Speaker 2" Binding="{Binding Path=Speaker2}"/>
+            <DataGridTextColumn Header="GE" Binding="{Binding Path=GeneralEvaluator}"/>
+            <DataGridTextColumn Header="Evaluator 1" Binding="{Binding Path=Evaluator1}"/>
+            <DataGridTextColumn Header="Evaluator 2" Binding="{Binding Path=Evaluator2}"/>
+            <DataGridTextColumn Header="TT" Binding="{Binding Path=TableTopics}"/>
+            <DataGridTextColumn Header="Ah" Binding="{Binding Path=AhCounter}"/>
+            <DataGridTextColumn Header="Gram" Binding="{Binding Path=Grammarian}"/>
+            <DataGridTextColumn Header="Timer" Binding="{Binding Path=Timer}"/>
+            <DataGridTextColumn Header="Quiz" Binding="{Binding Path=QuizMaster}"/>
+            <DataGridTextColumn Header="Video" Binding="{Binding Path=Video}"/>
+            <DataGridTextColumn Header="HotSeat" Binding="{Binding Path=HotSeat}"/>
+            --><!--public List
               <int>Attendees { get; set; }
     public MemberModel TTWinner { get; set; }
     public List
                 <int>TTContestants { get; set; }-->
-            <!--<DataGridTextColumn Header="Day of Meeting"/>-->
+            <!--<DataGridTextColumn Header="Day of Meeting"/>--><!--
           </DataGrid.Columns>
-        </DataGrid>
+        </DataGrid>-->
+        <StackPanel>
+        <DockPanel HorizontalAlignment="Left" LastChildFill="False">
+          <Button Margin="10" Width="130" Height="25" HorizontalAlignment="Left" Command="{Binding GenerateReportCmd}" Content="Generate Report" 
+                  />
+        </DockPanel>
+        </StackPanel>
       </TabItem>
     </TabControl>
   </DockPanel>
