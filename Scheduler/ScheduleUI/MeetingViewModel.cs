@@ -151,7 +151,7 @@ namespace ScheduleUI
       //_members.Remove(video);
 
       //GetMembers(ref members);
-      List<DateTime> theMeetings = GetMonthlyMeetings(new DateTime(2019, 11, 6));
+      List<DateTime> theMeetings = GetMonthlyMeetings(new DateTime(2019, 12, 11));
       int NumberOfMeetings = 6;//  meetings.Count;
      // List<string> speakers =
       GetRoles(members, theMeetings);//, "speaker");
@@ -408,6 +408,12 @@ namespace ScheduleUI
       HashSet<string> meeting4 = new HashSet<string>();
       HashSet<string> meeting5 = new HashSet<string>();
 
+      List<HashSet<string>> meetings = new List<HashSet<string>>();
+      foreach(var t in meetingDates)
+      {
+        meetings.Add(new HashSet<string>());
+      }
+
       //"speaker")
       List<string> snames = new List<string>();
       List<string> enames = new List<string>();
@@ -421,243 +427,333 @@ namespace ScheduleUI
       List<string> videonames = new List<string>();
       List<string> hnames = new List<string>();
 
+      //while (i <= meetingDates.Count() - 1)
+      //{
+      //  var speaker = members.OrderBy(a => a.Speaker).First();
+      //  //firstrole.Add(speaker.Name);
+      //  snames.Add(speaker.Name);
+      //  members.Remove(speaker);
+      //  speaker.Speaker = meetingDates[i];
+      //  speaker = members.OrderBy(a => a.Speaker).First();
+      //  //firstrole.Add(speaker.Name);
+      //  snames.Add(speaker.Name);
+      //  members.Remove(speaker);
+
+      //  speaker.Speaker = meetingDates[i];
+      //  i++;
+      //}
+
+      ////"evaluator")
+      //i = 0;
+      //List<MemberModel> temp = new List<MemberModel>();
+      //while (i <= meetingDates.Count() - 1)
+      //{
+      //  var evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
+      //  //while (!firstrole.Add(evaluator.Name))
+      //  //{
+      //  //  members.Remove(evaluator);
+      //  //  temp.Add(evaluator);
+      //  //  evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
+          
+      //  //}
+      //  enames.Add(evaluator.Name);
+      //  evaluator.Evaluator = meetingDates[i];
+      //  members.Remove(evaluator);
+      //  evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
+      //  //while (!firstrole.Add(evaluator.Name))
+      //  //{
+      //  //  members.Remove(evaluator);
+      //  //  temp.Add(evaluator);
+      //  //  evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
+
+      //  //}
+      //  enames.Add(evaluator.Name);
+      //  members.Remove(evaluator);
+
+      //  evaluator.Evaluator = meetingDates[i];
+      //  i++;
+      //}
+
+      //foreach (var e in temp)
+      //  members.Add(e);
+
+      //temp.Clear();
+      ////else if (role == "generalevaluator")
+      //i = 0;
+      //while (i <= meetingDates.Count() - 1)
+      //{
+      //  var evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.GeneralEvaluator).First();
+      //  //while (!firstrole.Add(evaluator.Name))
+      //  //{
+      //  //  members.Remove(evaluator);
+      //  //  temp.Add(evaluator);
+      //  //  evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
+
+      //  //}
+      //  members.Remove(evaluator);
+
+      //  gnames.Add(evaluator.Name);
+      //  evaluator.GeneralEvaluator = meetingDates[i];
+      //  i++;
+      //}
+      //foreach (var e in temp)
+      //  members.Add(e);
+      //temp.Clear();
+
+      ////else if (role == "toastmaster")
+      //i = 0;
+      //while (i <= meetingDates.Count() - 1)
+      //{
+      //  var toastmaster = members.Where(a => a.CanBeToastmaster == true).OrderBy(a => a.Toastmaster).First();
+      //  //while (!firstrole.Add(toastmaster.Name))
+      //  //{
+      //  //  members.Remove(toastmaster);
+      //  //  temp.Add(toastmaster);
+      //  //  toastmaster = members.Where(a => a.CanBeToastmaster == true).OrderBy(a => a.Toastmaster).First();
+
+      //  //}
+      //  tnames.Add(toastmaster.Name);
+      //  members.Remove(toastmaster);
+
+      //  toastmaster.Toastmaster = meetingDates[i];
+      //  i++;
+      //}
+
+      //foreach (var e in temp)
+      //  members.Add(e);
+      //temp.Clear();
+
+      ////else if (role == "hotseat")
+      //i = 0;
+      //while (i <= meetingDates.Count() - 1)
+      //{
+      //  var hotseat = members.OrderBy(a => a.HotSeat).First();
+      //  //while (!firstrole.Add(hotseat.Name))
+      //  //{
+      //  //  members.Remove(hotseat);
+      //  //  temp.Add(hotseat);
+      //  //  hotseat = members.OrderBy(a => a.HotSeat).First();
+
+      //  //}
+      //  hnames.Add(hotseat.Name);
+      //  members.Remove(hotseat);
+
+      //  hotseat.HotSeat = meetingDates[i];
+      //  i++;
+      //}
+
+      //foreach (var e in temp)
+      //  members.Add(e);
+      //temp.Clear();
+
+      ////}
+      ////else if (role == "tabletopics")
+      //i = 0;
+      //while (i <= meetingDates.Count() - 1)
+      //{
+      //  var tt = members.OrderBy(a => a.TT).First();
+      //  //while (!firstrole.Add(tt.Name))
+      //  //{
+      //  //  members.Remove(tt);
+      //  //  temp.Add(tt);
+      //  //  tt = members.OrderBy(a => a.TT).First();
+
+      //  //}
+      //  ttnames.Add(tt.Name);
+      //  members.Remove(tt);
+
+      //  tt.TT = meetingDates[i];
+      //  i++;
+      //}
+
+      //foreach (var e in temp)
+      //  members.Add(e);
+      //temp.Clear();
+
+      ////}
+      ////else if (role == "grammarian")
+      //i = 0;
+      //while (i <= meetingDates.Count() - 1)
+      //{
+      //  var gram = members.OrderBy(a => a.Gram).First();
+      //  //while (!firstrole.Add(tt.Name))
+      //  //{
+      //  //  members.Remove(tt);
+      //  //  temp.Add(tt);
+      //  //  tt = members.OrderBy(a => a.TT).First();
+
+      //  //}
+      //  grnames.Add(gram.Name);
+      //  members.Remove(gram);
+
+      //  gram.Gram = meetingDates[i];
+      //  i++;
+      //}
+      ////else if (role == "timer")
+      //i = 0;
+
+      //members.Clear();
+
+      //members = new List<MemberModel>(localMembers);
+
+      //while (i <= meetingDates.Count() - 1)
+      //{
+      //  var timer = members.OrderBy(a => a.Timer).First();
+      //  //while (!firstrole.Add(tt.Name))
+      //  //{
+      //  //  members.Remove(tt);
+      //  //  temp.Add(tt);
+      //  //  tt = members.OrderBy(a => a.TT).First();
+
+      //  //}
+      //  timernames.Add(timer.Name);
+      //  members.Remove(timer);
+
+      //  timer.Timer = meetingDates[i];
+      //  i++;
+      //}
+      ////else if (role == "ah")
+      //i = 0;
+      //while (i <= meetingDates.Count() - 1)
+      //{
+      //  var ah = members.OrderBy(a => a.Ah).First();
+      //  //while (!firstrole.Add(tt.Name))
+      //  //{
+      //  //  members.Remove(tt);
+      //  //  temp.Add(tt);
+      //  //  tt = members.OrderBy(a => a.TT).First();
+
+      //  //}
+      //  ahnames.Add(ah.Name);
+      //  members.Remove(ah);
+      //  ah.Ah = meetingDates[i];
+      //  i++;
+      //}
+      ////else if (role == "quiz")
+      //i = 0;
+      //while (i <= meetingDates.Count() - 1)
+      //{
+      //  var quiz = members.OrderBy(a => a.Quiz).First();
+      //  //while (!firstrole.Add(tt.Name))
+      //  //{
+      //  //  members.Remove(tt);
+      //  //  temp.Add(tt);
+      //  //  tt = members.OrderBy(a => a.TT).First();
+
+      //  //}
+      //  quiznames.Add(quiz.Name);
+      //  members.Remove(quiz);
+      //  quiz.Quiz = meetingDates[i];
+      //  i++;
+      //}
+      ////else if (role == "video")
+      //i = 0;
+      //while (i <= meetingDates.Count() - 1)
+      //{
+      //  var video = members.OrderBy(a => a.Video).First();
+      //  //while (!firstrole.Add(tt.Name))
+      //  //{
+      //  //  members.Remove(tt);
+      //  //  temp.Add(tt);
+      //  //  tt = members.OrderBy(a => a.TT).First();
+
+      //  //}
+      //  videonames.Add(video.Name);
+      //  members.Remove(video);
+      //  video.Video = meetingDates[i];
+      //  i++;
+      //}
+
+
+
+
       while (i <= meetingDates.Count() - 1)
       {
         var speaker = members.OrderBy(a => a.Speaker).First();
-        //firstrole.Add(speaker.Name);
         snames.Add(speaker.Name);
         members.Remove(speaker);
         speaker.Speaker = meetingDates[i];
         speaker = members.OrderBy(a => a.Speaker).First();
-        //firstrole.Add(speaker.Name);
         snames.Add(speaker.Name);
         members.Remove(speaker);
 
         speaker.Speaker = meetingDates[i];
-        i++;
-      }
 
-      //"evaluator")
-      i = 0;
-      List<MemberModel> temp = new List<MemberModel>();
-      while (i <= meetingDates.Count() - 1)
-      {
         var evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
-        //while (!firstrole.Add(evaluator.Name))
-        //{
-        //  members.Remove(evaluator);
-        //  temp.Add(evaluator);
-        //  evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
-          
-        //}
+
         enames.Add(evaluator.Name);
         evaluator.Evaluator = meetingDates[i];
         members.Remove(evaluator);
         evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
-        //while (!firstrole.Add(evaluator.Name))
-        //{
-        //  members.Remove(evaluator);
-        //  temp.Add(evaluator);
-        //  evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
 
-        //}
         enames.Add(evaluator.Name);
         members.Remove(evaluator);
 
         evaluator.Evaluator = meetingDates[i];
-        i++;
-      }
 
-      foreach (var e in temp)
-        members.Add(e);
+        var genevaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.GeneralEvaluator).First();
 
-      temp.Clear();
-      //else if (role == "generalevaluator")
-      i = 0;
-      while (i <= meetingDates.Count() - 1)
-      {
-        var evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.GeneralEvaluator).First();
-        //while (!firstrole.Add(evaluator.Name))
-        //{
-        //  members.Remove(evaluator);
-        //  temp.Add(evaluator);
-        //  evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
-
-        //}
-        members.Remove(evaluator);
+        members.Remove(genevaluator);
 
         gnames.Add(evaluator.Name);
         evaluator.GeneralEvaluator = meetingDates[i];
-        i++;
-      }
-      foreach (var e in temp)
-        members.Add(e);
-      temp.Clear();
 
-      //else if (role == "toastmaster")
-      i = 0;
-      while (i <= meetingDates.Count() - 1)
-      {
         var toastmaster = members.Where(a => a.CanBeToastmaster == true).OrderBy(a => a.Toastmaster).First();
-        //while (!firstrole.Add(toastmaster.Name))
-        //{
-        //  members.Remove(toastmaster);
-        //  temp.Add(toastmaster);
-        //  toastmaster = members.Where(a => a.CanBeToastmaster == true).OrderBy(a => a.Toastmaster).First();
 
-        //}
         tnames.Add(toastmaster.Name);
         members.Remove(toastmaster);
 
         toastmaster.Toastmaster = meetingDates[i];
-        i++;
-      }
 
-      foreach (var e in temp)
-        members.Add(e);
-      temp.Clear();
-
-      //else if (role == "hotseat")
-      i = 0;
-      while (i <= meetingDates.Count() - 1)
-      {
         var hotseat = members.OrderBy(a => a.HotSeat).First();
-        //while (!firstrole.Add(hotseat.Name))
-        //{
-        //  members.Remove(hotseat);
-        //  temp.Add(hotseat);
-        //  hotseat = members.OrderBy(a => a.HotSeat).First();
 
-        //}
         hnames.Add(hotseat.Name);
         members.Remove(hotseat);
 
         hotseat.HotSeat = meetingDates[i];
-        i++;
-      }
 
-      foreach (var e in temp)
-        members.Add(e);
-      temp.Clear();
-
-      //}
-      //else if (role == "tabletopics")
-      i = 0;
-      while (i <= meetingDates.Count() - 1)
-      {
         var tt = members.OrderBy(a => a.TT).First();
-        //while (!firstrole.Add(tt.Name))
-        //{
-        //  members.Remove(tt);
-        //  temp.Add(tt);
-        //  tt = members.OrderBy(a => a.TT).First();
 
-        //}
         ttnames.Add(tt.Name);
         members.Remove(tt);
 
         tt.TT = meetingDates[i];
-        i++;
-      }
 
-      foreach (var e in temp)
-        members.Add(e);
-      temp.Clear();
-
-      //}
-      //else if (role == "grammarian")
-      i = 0;
-      while (i <= meetingDates.Count() - 1)
-      {
         var gram = members.OrderBy(a => a.Gram).First();
-        //while (!firstrole.Add(tt.Name))
-        //{
-        //  members.Remove(tt);
-        //  temp.Add(tt);
-        //  tt = members.OrderBy(a => a.TT).First();
 
-        //}
         grnames.Add(gram.Name);
         members.Remove(gram);
 
         gram.Gram = meetingDates[i];
-        i++;
-      }
-      //else if (role == "timer")
-      i = 0;
 
-      members.Clear();
-
-      members = new List<MemberModel>(localMembers);
-
-      while (i <= meetingDates.Count() - 1)
-      {
         var timer = members.OrderBy(a => a.Timer).First();
-        //while (!firstrole.Add(tt.Name))
-        //{
-        //  members.Remove(tt);
-        //  temp.Add(tt);
-        //  tt = members.OrderBy(a => a.TT).First();
 
-        //}
         timernames.Add(timer.Name);
         members.Remove(timer);
 
         timer.Timer = meetingDates[i];
-        i++;
-      }
-      //else if (role == "ah")
-      i = 0;
-      while (i <= meetingDates.Count() - 1)
-      {
-        var ah = members.OrderBy(a => a.Ah).First();
-        //while (!firstrole.Add(tt.Name))
-        //{
-        //  members.Remove(tt);
-        //  temp.Add(tt);
-        //  tt = members.OrderBy(a => a.TT).First();
 
-        //}
+        var ah = members.OrderBy(a => a.Ah).First();
+
         ahnames.Add(ah.Name);
         members.Remove(ah);
         ah.Ah = meetingDates[i];
-        i++;
-      }
-      //else if (role == "quiz")
-      i = 0;
-      while (i <= meetingDates.Count() - 1)
-      {
-        var quiz = members.OrderBy(a => a.Quiz).First();
-        //while (!firstrole.Add(tt.Name))
-        //{
-        //  members.Remove(tt);
-        //  temp.Add(tt);
-        //  tt = members.OrderBy(a => a.TT).First();
 
-        //}
+        var quiz = members.OrderBy(a => a.Quiz).First();
+
         quiznames.Add(quiz.Name);
         members.Remove(quiz);
         quiz.Quiz = meetingDates[i];
-        i++;
-      }
-      //else if (role == "video")
-      i = 0;
-      while (i <= meetingDates.Count() - 1)
-      {
-        var video = members.OrderBy(a => a.Video).First();
-        //while (!firstrole.Add(tt.Name))
-        //{
-        //  members.Remove(tt);
-        //  temp.Add(tt);
-        //  tt = members.OrderBy(a => a.TT).First();
 
-        //}
+        var video = members.OrderBy(a => a.Video).First();
+
         videonames.Add(video.Name);
         members.Remove(video);
         video.Video = meetingDates[i];
-        i++;
+
       }
-      //return roles;
+
+
 
       if (File.Exists("C:\\Users\\mike\\Documents\\TI\\MeetingsNext.csv"))
       {

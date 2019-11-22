@@ -207,7 +207,7 @@ namespace ScheduleUI
       //MeetingModelBase c = new MeetingModelBase(MeetingTemplate, MeetingDate);
       // need to create class depending on template specified
 
-      if (MeetingTemplate == )
+      //if (MeetingTemplate == )
       var t = _members.Where(it => it.IsCurrentMember == true);
       //t = _members.Where(it => it.Name != "Lisa Winn");
       List<MemberModel> temp = t.ToList();
