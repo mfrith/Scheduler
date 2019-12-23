@@ -116,7 +116,7 @@ namespace ScheduleUI
     
     public void Generate()
     {
-      List<MemberModel> members = new List<MemberModel>(_members);
+      //List<MemberModel> members = new List<MemberModel>(_members);
       // need flag for monthly grouping
       // base selection for the month, default setting
       //if (bMonthly)
@@ -151,10 +151,10 @@ namespace ScheduleUI
       //_members.Remove(video);
 
       //GetMembers(ref members);
-      List<DateTime> theMeetings = GetMonthlyMeetings(new DateTime(2019, 12, 11));
+      List<DateTime> theMeetings = GetMonthlyMeetings(new DateTime(2019, 12, 11), false);
       int NumberOfMeetings = 6;//  meetings.Count;
      // List<string> speakers =
-      GetRoles(members, theMeetings);//, "speaker");
+      GetRoles(theMeetings);//, "speaker");
       //List<string> evaluators = GetRoles(members, theMeetings, "evaluator");
 
       ////List<MemberModel> speakers = GetSpeakers(members, new DateTime(2018, 11, 7));
@@ -337,7 +337,7 @@ namespace ScheduleUI
       //}
     }
 
-    List<DateTime> GetMonthlyMeetings(DateTime startDate)
+    List<DateTime> GetMonthlyMeetings(DateTime startDate, bool lastFriday = true)
     {
       // assume startDate is a wednesday
       DateTime firstWednesday = startDate;
@@ -366,7 +366,7 @@ namespace ScheduleUI
       if (month == 12) //december
       {
         // account for Christmas
-        meetings.Add(firstWednesday);
+        //meetings.Add(firstWednesday);
         meetings.Add(secondWednesday);
         meetings.Add(thirdWednesday);
         return meetings;
@@ -393,12 +393,15 @@ namespace ScheduleUI
         meetings.Add(fifthWednesday);
         meetings.Add(fridayMeeting);
       }
+
+      if (lastFriday == false)
+        meetings.Remove(fridayMeeting);
       return meetings;
     }
 
-    void GetRoles(List<MemberModel> members, List<DateTime> meetingDates)
+    void GetRoles(List<DateTime> meetingDates)
     {
-      List<MemberModel> localMembers = new List<MemberModel>(members);
+      //List<MemberModel> localMembers = new List<MemberModel>(members);
       //members.CopyTo(localMembers);
       //HashSet<string> firstrole = new HashSet<string>();
       int i = 0;
@@ -663,12 +666,15 @@ namespace ScheduleUI
       //  video.Video = meetingDates[i];
       //  i++;
       //}
-
-
-
+        List<MemberModel> members = new List<MemberModel>(_members);
 
       while (i <= meetingDates.Count() - 1)
       {
+        int meetingsout = i + 1;
+        var iterationMembers = members.Where(it => it.MeetingsOut.Contains(meetingsout)).ToList();
+        foreach(var im in iterationMembers)
+          members.Remove(im);
+
         var speaker = members.OrderBy(a => a.Speaker).First();
         snames.Add(speaker.Name);
         members.Remove(speaker);
@@ -695,8 +701,8 @@ namespace ScheduleUI
 
         members.Remove(genevaluator);
 
-        gnames.Add(evaluator.Name);
-        evaluator.GeneralEvaluator = meetingDates[i];
+        gnames.Add(genevaluator.Name);
+        genevaluator.GeneralEvaluator = meetingDates[i];
 
         var toastmaster = members.Where(a => a.CanBeToastmaster == true).OrderBy(a => a.Toastmaster).First();
 
@@ -750,10 +756,10 @@ namespace ScheduleUI
         videonames.Add(video.Name);
         members.Remove(video);
         video.Video = meetingDates[i];
-
+        i++;
+        foreach (var im in iterationMembers)
+          members.Add(im);
       }
-
-
 
       if (File.Exists("C:\\Users\\mike\\Documents\\TI\\MeetingsNext.csv"))
       {
@@ -764,31 +770,31 @@ namespace ScheduleUI
       {
         string dates = "Role, Nov 6, Nov 13, Nov 20, Nov 22, Nov 27";
         file.WriteLine(dates);
-        string row1 = "Toastmaster," + tnames[0] + "," + tnames[1] + "," + tnames[2] + "," + tnames[3] + "," + tnames[4]; //+ "," + tnames[5];
+        string row1 = "Toastmaster," + tnames[0] + "," + tnames[1];// + "," + tnames[2] + "," + tnames[3] + "," + tnames[4]; //+ "," + tnames[5];
         file.WriteLine(row1);
-        row1 = "Speaker 1," + snames[0] + "," + snames[2] + "," + snames[4] + "," + snames[6] + "," + snames[8];// + "," + snames[10];
+        row1 = "Speaker 1," + snames[0] + "," + snames[2];// + "," + snames[4] + "," + snames[6] + "," + snames[8];// + "," + snames[10];
         file.WriteLine(row1);
-        row1 = "Speaker 2," + snames[1] + "," + snames[3] + "," + snames[5] + "," + snames[7] + "," + snames[9];// + "," + snames[11];
+        row1 = "Speaker 2," + snames[1] + "," + snames[3];// + "," + snames[5] + "," + snames[7] + "," + snames[9];// + "," + snames[11];
         file.WriteLine(row1);
-        row1 = "GE," + gnames[0] + "," + gnames[1] + "," + gnames[2] + "," + gnames[3] + "," + gnames[4];// + "," + gnames[5];
+        row1 = "GE," + gnames[0] + "," + gnames[1];// + "," + gnames[2] + "," + gnames[3] + "," + gnames[4];// + "," + gnames[5];
         file.WriteLine(row1);
-        row1 = "Eval 1," + enames[0] + "," + enames[2] + "," + enames[4] + "," + enames[6] + "," + enames[8];// + "," + enames[10];
+        row1 = "Eval 1," + enames[0] + "," + enames[2];// + "," + enames[4] + "," + enames[6] + "," + enames[8];// + "," + enames[10];
         file.WriteLine(row1);
-        row1 = "Eval 2," + enames[1] + "," + enames[3] + "," + enames[5] + "," + enames[7] + "," + enames[9];// + "," + enames[11];
+        row1 = "Eval 2," + enames[1] + "," + enames[3];// + "," + enames[5] + "," + enames[7] + "," + enames[9];// + "," + enames[11];
         file.WriteLine(row1);
-        row1 = "TT," + ttnames[0] + "," + ttnames[1] + "," + ttnames[2] + "," + ttnames[3] + "," + tnames[4];// + "," + tnames[5];
+        row1 = "TT," + ttnames[0] + "," + ttnames[1];// + "," + ttnames[2] + "," + ttnames[3] + "," + tnames[4];// + "," + tnames[5];
         file.WriteLine(row1);
-        row1 = "Ah ," + ahnames[0] + "," + ahnames[1] + "," + ahnames[2] + "," + ahnames[3] + "," + ahnames[4];// + "," + ahnames[5];
+        row1 = "Ah ," + ahnames[0] + "," + ahnames[1];// + "," + ahnames[2] + "," + ahnames[3] + "," + ahnames[4];// + "," + ahnames[5];
         file.WriteLine(row1);
-        row1 = "Timer," + timernames[0] + "," + timernames[1] + "," + timernames[2] + "," + timernames[3] + "," + timernames[4];// + "," + timernames[5];
+        row1 = "Timer," + timernames[0] + "," + timernames[1];// + "," + timernames[2] + "," + timernames[3] + "," + timernames[4];// + "," + timernames[5];
         file.WriteLine(row1);
-        row1 = "Gram," + grnames[0] + "," + grnames[1] + "," + grnames[2] + "," + grnames[3] + "," + grnames[4];// + "," + grnames[5];
+        row1 = "Gram," + grnames[0] + "," + grnames[1];// + "," + grnames[2] + "," + grnames[3] + "," + grnames[4];// + "," + grnames[5];
         file.WriteLine(row1);
-        row1 = "Quiz," + quiznames[0] + "," + quiznames[1] + "," + quiznames[2] + "," + quiznames[3] + "," + quiznames[4];// + "," + quiznames[5];
+        row1 = "Quiz," + quiznames[0] + "," + quiznames[1];// + "," + quiznames[2] + "," + quiznames[3] + "," + quiznames[4];// + "," + quiznames[5];
         file.WriteLine(row1);
-        row1 = "Video," + videonames[0] + "," + videonames[1] + "," + videonames[2] + "," + videonames[3] + "," + videonames[4];// + "," + videonames[5];
+        row1 = "Video," + videonames[0] + "," + videonames[1];// + "," + videonames[2] + "," + videonames[3] + "," + videonames[4];// + "," + videonames[5];
         file.WriteLine(row1);
-        row1 = "HS," + hnames[0] + "," + hnames[1] + "," + hnames[2] + "," + hnames[3] + "," + hnames[4];// + "," + hnames[5];
+        row1 = "HS," + hnames[0] + "," + hnames[1];// + "," + hnames[2] + "," + hnames[3] + "," + hnames[4];// + "," + hnames[5];
         file.WriteLine(row1);
 
       }
