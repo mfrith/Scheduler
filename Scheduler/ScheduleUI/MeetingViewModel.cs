@@ -105,7 +105,7 @@ namespace ScheduleUI
       this.meetingModel = meetingModel;
     }
 
-    
+
     public MeetingModelRegularVM(string meetingDate, string meetingTemplate, List<MemberModel> members)
     {
       DayOfMeeting = meetingDate;
@@ -113,7 +113,7 @@ namespace ScheduleUI
       _members = members;
       meetingModel = new MeetingModelRegular();
     }
-    
+
     public void Generate()
     {
       //List<MemberModel> members = new List<MemberModel>(_members);
@@ -151,10 +151,11 @@ namespace ScheduleUI
       //_members.Remove(video);
 
       //GetMembers(ref members);
-      List<DateTime> theMeetings = GetMonthlyMeetings(new DateTime(2019, 12, 11), false);
+      List<DateTime> theMeetings = GetMonthlyMeetings(new DateTime(2020, 1, 8), true);
       int NumberOfMeetings = 6;//  meetings.Count;
-     // List<string> speakers =
-      GetRoles(theMeetings);//, "speaker");
+                               // List<string> speakers =
+      GetRolesPerMonth(theMeetings);
+      GetRolesPerMeeting(theMeetings);//, "speaker");
       //List<string> evaluators = GetRoles(members, theMeetings, "evaluator");
 
       ////List<MemberModel> speakers = GetSpeakers(members, new DateTime(2018, 11, 7));
@@ -346,7 +347,7 @@ namespace ScheduleUI
       DateTime fourthWednesday = startDate.AddDays(21);
       DateTime fifthWednesday = startDate.AddDays(28);
       var daysinmonth = DateTime.DaysInMonth(startDate.Year, startDate.Month);
-      DateTime lastDayOfMonth = new DateTime(2019, startDate.Month, daysinmonth);
+      DateTime lastDayOfMonth = new DateTime(2020, startDate.Month, daysinmonth);
 
       DateTime g = lastDayOfMonth;
       while (g.DayOfWeek != DayOfWeek.Friday)
@@ -399,8 +400,10 @@ namespace ScheduleUI
       return meetings;
     }
 
-    void GetRoles(List<DateTime> meetingDates)
+    void GetRolesPerMonth(List<DateTime> meetingDates)
     {
+      List<MemberModel> members = new List<MemberModel>(_members.Where(m => m.Name != "Mike Frith").ToList());
+
       //List<MemberModel> localMembers = new List<MemberModel>(members);
       //members.CopyTo(localMembers);
       //HashSet<string> firstrole = new HashSet<string>();
@@ -412,7 +415,7 @@ namespace ScheduleUI
       HashSet<string> meeting5 = new HashSet<string>();
 
       List<HashSet<string>> meetings = new List<HashSet<string>>();
-      foreach(var t in meetingDates)
+      foreach (var t in meetingDates)
       {
         meetings.Add(new HashSet<string>());
       }
@@ -430,120 +433,151 @@ namespace ScheduleUI
       List<string> videonames = new List<string>();
       List<string> hnames = new List<string>();
 
-      //while (i <= meetingDates.Count() - 1)
-      //{
-      //  var speaker = members.OrderBy(a => a.Speaker).First();
-      //  //firstrole.Add(speaker.Name);
-      //  snames.Add(speaker.Name);
-      //  members.Remove(speaker);
-      //  speaker.Speaker = meetingDates[i];
-      //  speaker = members.OrderBy(a => a.Speaker).First();
-      //  //firstrole.Add(speaker.Name);
-      //  snames.Add(speaker.Name);
-      //  members.Remove(speaker);
+      while (i <= meetingDates.Count() - 1)
+      {
+        int meetingsout = i + 1;
+        var iterationMembers = members.Where(it => it.MeetingsOut.Contains(meetingsout)).ToList();
+        foreach (var im in iterationMembers)
+          members.Remove(im);
 
-      //  speaker.Speaker = meetingDates[i];
-      //  i++;
-      //}
+        var speaker = members.OrderBy(a => a.Speaker).First();
+        //firstrole.Add(speaker.Name);
+        snames.Add(speaker.Name);
+        members.Remove(speaker);
+        speaker.Speaker = meetingDates[i];
+        speaker = members.OrderBy(a => a.Speaker).First();
+        //firstrole.Add(speaker.Name);
+        snames.Add(speaker.Name);
+        members.Remove(speaker);
+
+        speaker.Speaker = meetingDates[i];
+        i++;
+        foreach (var im in iterationMembers)
+          members.Add(im);
+      }
 
       ////"evaluator")
-      //i = 0;
+      i = 0;
       //List<MemberModel> temp = new List<MemberModel>();
-      //while (i <= meetingDates.Count() - 1)
-      //{
-      //  var evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
-      //  //while (!firstrole.Add(evaluator.Name))
-      //  //{
-      //  //  members.Remove(evaluator);
-      //  //  temp.Add(evaluator);
-      //  //  evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
-          
-      //  //}
-      //  enames.Add(evaluator.Name);
-      //  evaluator.Evaluator = meetingDates[i];
-      //  members.Remove(evaluator);
-      //  evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
-      //  //while (!firstrole.Add(evaluator.Name))
-      //  //{
-      //  //  members.Remove(evaluator);
-      //  //  temp.Add(evaluator);
-      //  //  evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
+      while (i <= meetingDates.Count() - 1)
+      {
+        int meetingsout = i + 1;
+        var iterationMembers = members.Where(it => it.MeetingsOut.Contains(meetingsout)).ToList();
+        foreach (var im in iterationMembers)
+          members.Remove(im);
+        var evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
+        //while (!firstrole.Add(evaluator.Name))
+        //{
+        //  members.Remove(evaluator);
+        //  temp.Add(evaluator);
+        //  evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
 
-      //  //}
-      //  enames.Add(evaluator.Name);
-      //  members.Remove(evaluator);
+        //}
+        enames.Add(evaluator.Name);
+        evaluator.Evaluator = meetingDates[i];
+        members.Remove(evaluator);
+        evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
+        //while (!firstrole.Add(evaluator.Name))
+        //{
+        //  members.Remove(evaluator);
+        //  temp.Add(evaluator);
+        //  evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
 
-      //  evaluator.Evaluator = meetingDates[i];
-      //  i++;
-      //}
+        //}
+        enames.Add(evaluator.Name);
+        members.Remove(evaluator);
+
+        evaluator.Evaluator = meetingDates[i];
+        i++;
+        foreach (var im in iterationMembers)
+          members.Add(im);
+      }
 
       //foreach (var e in temp)
       //  members.Add(e);
 
       //temp.Clear();
-      ////else if (role == "generalevaluator")
-      //i = 0;
-      //while (i <= meetingDates.Count() - 1)
-      //{
-      //  var evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.GeneralEvaluator).First();
-      //  //while (!firstrole.Add(evaluator.Name))
-      //  //{
-      //  //  members.Remove(evaluator);
-      //  //  temp.Add(evaluator);
-      //  //  evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
+      //else if (role == "generalevaluator")
+      i = 0;
+      while (i <= meetingDates.Count() - 1)
+      {
+        int meetingsout = i + 1;
+        var iterationMembers = members.Where(it => it.MeetingsOut.Contains(meetingsout)).ToList();
+        foreach (var im in iterationMembers)
+          members.Remove(im);
+        var evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.GeneralEvaluator).First();
+        //while (!firstrole.Add(evaluator.Name))
+        //{
+        //  members.Remove(evaluator);
+        //  temp.Add(evaluator);
+        //  evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
 
-      //  //}
-      //  members.Remove(evaluator);
+        //}
+        members.Remove(evaluator);
 
-      //  gnames.Add(evaluator.Name);
-      //  evaluator.GeneralEvaluator = meetingDates[i];
-      //  i++;
-      //}
+        gnames.Add(evaluator.Name);
+        evaluator.GeneralEvaluator = meetingDates[i];
+        i++;
+        foreach (var im in iterationMembers)
+          members.Add(im);
+      }
       //foreach (var e in temp)
       //  members.Add(e);
       //temp.Clear();
 
       ////else if (role == "toastmaster")
-      //i = 0;
-      //while (i <= meetingDates.Count() - 1)
-      //{
-      //  var toastmaster = members.Where(a => a.CanBeToastmaster == true).OrderBy(a => a.Toastmaster).First();
-      //  //while (!firstrole.Add(toastmaster.Name))
-      //  //{
-      //  //  members.Remove(toastmaster);
-      //  //  temp.Add(toastmaster);
-      //  //  toastmaster = members.Where(a => a.CanBeToastmaster == true).OrderBy(a => a.Toastmaster).First();
+      i = 0;
+      while (i <= meetingDates.Count() - 1)
+      {
+        int meetingsout = i + 1;
+        var iterationMembers = members.Where(it => it.MeetingsOut.Contains(meetingsout)).ToList();
+        foreach (var im in iterationMembers)
+          members.Remove(im);
+        var toastmaster = members.Where(a => a.CanBeToastmaster == true).OrderBy(a => a.Toastmaster).First();
+        //while (!firstrole.Add(toastmaster.Name))
+        //{
+        //  members.Remove(toastmaster);
+        //  temp.Add(toastmaster);
+        //  toastmaster = members.Where(a => a.CanBeToastmaster == true).OrderBy(a => a.Toastmaster).First();
 
-      //  //}
-      //  tnames.Add(toastmaster.Name);
-      //  members.Remove(toastmaster);
+        //}
+        tnames.Add(toastmaster.Name);
+        members.Remove(toastmaster);
 
-      //  toastmaster.Toastmaster = meetingDates[i];
-      //  i++;
-      //}
+        toastmaster.Toastmaster = meetingDates[i];
+        i++;
+        foreach (var im in iterationMembers)
+          members.Add(im);
+      }
 
       //foreach (var e in temp)
       //  members.Add(e);
       //temp.Clear();
 
       ////else if (role == "hotseat")
-      //i = 0;
-      //while (i <= meetingDates.Count() - 1)
-      //{
-      //  var hotseat = members.OrderBy(a => a.HotSeat).First();
-      //  //while (!firstrole.Add(hotseat.Name))
-      //  //{
-      //  //  members.Remove(hotseat);
-      //  //  temp.Add(hotseat);
-      //  //  hotseat = members.OrderBy(a => a.HotSeat).First();
+      i = 0;
+      while (i <= meetingDates.Count() - 1)
+      {
+        int meetingsout = i + 1;
+        var iterationMembers = members.Where(it => it.MeetingsOut.Contains(meetingsout)).ToList();
+        foreach (var im in iterationMembers)
+          members.Remove(im);
+        var hotseat = members.OrderBy(a => a.HotSeat).First();
+        //while (!firstrole.Add(hotseat.Name))
+        //{
+        //  members.Remove(hotseat);
+        //  temp.Add(hotseat);
+        //  hotseat = members.OrderBy(a => a.HotSeat).First();
 
-      //  //}
-      //  hnames.Add(hotseat.Name);
-      //  members.Remove(hotseat);
+        //}
+        hnames.Add(hotseat.Name);
+        members.Remove(hotseat);
 
-      //  hotseat.HotSeat = meetingDates[i];
-      //  i++;
-      //}
+        hotseat.HotSeat = meetingDates[i];
+        i++;
+        foreach (var im in iterationMembers)
+          members.Add(im);
+      }
 
       //foreach (var e in temp)
       //  members.Add(e);
@@ -551,23 +585,29 @@ namespace ScheduleUI
 
       ////}
       ////else if (role == "tabletopics")
-      //i = 0;
-      //while (i <= meetingDates.Count() - 1)
-      //{
-      //  var tt = members.OrderBy(a => a.TT).First();
-      //  //while (!firstrole.Add(tt.Name))
-      //  //{
-      //  //  members.Remove(tt);
-      //  //  temp.Add(tt);
-      //  //  tt = members.OrderBy(a => a.TT).First();
+      i = 0;
+      while (i <= meetingDates.Count() - 1)
+      {
+        int meetingsout = i + 1;
+        var iterationMembers = members.Where(it => it.MeetingsOut.Contains(meetingsout)).ToList();
+        foreach (var im in iterationMembers)
+          members.Remove(im);
+        var tt = members.OrderBy(a => a.TT).First();
+        //while (!firstrole.Add(tt.Name))
+        //{
+        //  members.Remove(tt);
+        //  temp.Add(tt);
+        //  tt = members.OrderBy(a => a.TT).First();
 
-      //  //}
-      //  ttnames.Add(tt.Name);
-      //  members.Remove(tt);
+        //}
+        ttnames.Add(tt.Name);
+        members.Remove(tt);
 
-      //  tt.TT = meetingDates[i];
-      //  i++;
-      //}
+        tt.TT = meetingDates[i];
+        i++;
+        foreach (var im in iterationMembers)
+          members.Add(im);
+      }
 
       //foreach (var e in temp)
       //  members.Add(e);
@@ -575,104 +615,224 @@ namespace ScheduleUI
 
       ////}
       ////else if (role == "grammarian")
-      //i = 0;
-      //while (i <= meetingDates.Count() - 1)
-      //{
-      //  var gram = members.OrderBy(a => a.Gram).First();
-      //  //while (!firstrole.Add(tt.Name))
-      //  //{
-      //  //  members.Remove(tt);
-      //  //  temp.Add(tt);
-      //  //  tt = members.OrderBy(a => a.TT).First();
+      i = 0;
+      while (i <= meetingDates.Count() - 1)
+      {
+        int meetingsout = i + 1;
+        if (members.Count == 0)
+          members = new List<MemberModel>(_members.Where(m => m.Name != "Mike Frith").ToList());
+        var iterationMembers = members.Where(it => it.MeetingsOut.Contains(meetingsout)).ToList();
+        foreach (var im in iterationMembers)
+          members.Remove(im);
 
-      //  //}
-      //  grnames.Add(gram.Name);
-      //  members.Remove(gram);
+        if (members.Count == 0)
+        {
+          members = new List<MemberModel>(_members.Where(m => m.Name != "Mike Frith").ToList());
+          foreach (var im in iterationMembers)
+            members.Remove(im);
+          //iterationMembers.Clear();
+        }
+        var gram = members.OrderBy(a => a.Gram).First();
+        //while (!firstrole.Add(tt.Name))
+        //{
+        //  members.Remove(tt);
+        //  temp.Add(tt);
+        //  tt = members.OrderBy(a => a.TT).First();
 
-      //  gram.Gram = meetingDates[i];
-      //  i++;
-      //}
+        //}
+        grnames.Add(gram.Name);
+        members.Remove(gram);
+
+        gram.Gram = meetingDates[i];
+        i++;
+        foreach (var im in iterationMembers)
+          members.Add(im);
+      }
       ////else if (role == "timer")
-      //i = 0;
 
       //members.Clear();
 
       //members = new List<MemberModel>(localMembers);
 
-      //while (i <= meetingDates.Count() - 1)
-      //{
-      //  var timer = members.OrderBy(a => a.Timer).First();
-      //  //while (!firstrole.Add(tt.Name))
-      //  //{
-      //  //  members.Remove(tt);
-      //  //  temp.Add(tt);
-      //  //  tt = members.OrderBy(a => a.TT).First();
+      i = 0;
+      while (i <= meetingDates.Count() - 1)
+      {
+        int meetingsout = i + 1;
+        var iterationMembers = members.Where(it => it.MeetingsOut.Contains(meetingsout)).ToList();
+        foreach (var im in iterationMembers)
+          members.Remove(im);
+        var timer = members.OrderBy(a => a.Timer).First();
+        //while (!firstrole.Add(tt.Name))
+        //{
+        //  members.Remove(tt);
+        //  temp.Add(tt);
+        //  tt = members.OrderBy(a => a.TT).First();
 
-      //  //}
-      //  timernames.Add(timer.Name);
-      //  members.Remove(timer);
+        //}
+        timernames.Add(timer.Name);
+        members.Remove(timer);
 
-      //  timer.Timer = meetingDates[i];
-      //  i++;
-      //}
+        timer.Timer = meetingDates[i];
+        i++;
+        foreach (var im in iterationMembers)
+          members.Add(im);
+      }
       ////else if (role == "ah")
-      //i = 0;
-      //while (i <= meetingDates.Count() - 1)
-      //{
-      //  var ah = members.OrderBy(a => a.Ah).First();
-      //  //while (!firstrole.Add(tt.Name))
-      //  //{
-      //  //  members.Remove(tt);
-      //  //  temp.Add(tt);
-      //  //  tt = members.OrderBy(a => a.TT).First();
+      i = 0;
+      while (i <= meetingDates.Count() - 1)
+      {
+        int meetingsout = i + 1;
+        var iterationMembers = members.Where(it => it.MeetingsOut.Contains(meetingsout)).ToList();
+        foreach (var im in iterationMembers)
+          members.Remove(im);
+        var ah = members.OrderBy(a => a.Ah).First();
+        //while (!firstrole.Add(tt.Name))
+        //{
+        //  members.Remove(tt);
+        //  temp.Add(tt);
+        //  tt = members.OrderBy(a => a.TT).First();
 
-      //  //}
-      //  ahnames.Add(ah.Name);
-      //  members.Remove(ah);
-      //  ah.Ah = meetingDates[i];
-      //  i++;
-      //}
+        //}
+        ahnames.Add(ah.Name);
+        members.Remove(ah);
+        ah.Ah = meetingDates[i];
+        i++;
+        foreach (var im in iterationMembers)
+          members.Add(im);
+      }
       ////else if (role == "quiz")
-      //i = 0;
-      //while (i <= meetingDates.Count() - 1)
-      //{
-      //  var quiz = members.OrderBy(a => a.Quiz).First();
-      //  //while (!firstrole.Add(tt.Name))
-      //  //{
-      //  //  members.Remove(tt);
-      //  //  temp.Add(tt);
-      //  //  tt = members.OrderBy(a => a.TT).First();
+      i = 0;
+      while (i <= meetingDates.Count() - 1)
+      {
+        int meetingsout = i + 1;
+        var iterationMembers = members.Where(it => it.MeetingsOut.Contains(meetingsout)).ToList();
+        foreach (var im in iterationMembers)
+          members.Remove(im);
+        var quiz = members.OrderBy(a => a.Quiz).First();
+        //while (!firstrole.Add(tt.Name))
+        //{
+        //  members.Remove(tt);
+        //  temp.Add(tt);
+        //  tt = members.OrderBy(a => a.TT).First();
 
-      //  //}
-      //  quiznames.Add(quiz.Name);
-      //  members.Remove(quiz);
-      //  quiz.Quiz = meetingDates[i];
-      //  i++;
-      //}
+        //}
+        quiznames.Add(quiz.Name);
+        members.Remove(quiz);
+        quiz.Quiz = meetingDates[i];
+        i++;
+        foreach (var im in iterationMembers)
+          members.Add(im);
+      }
+
       ////else if (role == "video")
-      //i = 0;
-      //while (i <= meetingDates.Count() - 1)
-      //{
-      //  var video = members.OrderBy(a => a.Video).First();
-      //  //while (!firstrole.Add(tt.Name))
-      //  //{
-      //  //  members.Remove(tt);
-      //  //  temp.Add(tt);
-      //  //  tt = members.OrderBy(a => a.TT).First();
+      i = 0;
+      while (i <= meetingDates.Count() - 1)
+      {
+        int meetingsout = i + 1;
+        var iterationMembers = members.Where(it => it.MeetingsOut.Contains(meetingsout)).ToList();
+        foreach (var im in iterationMembers)
+          members.Remove(im);
+        var video = members.OrderBy(a => a.Video).First();
+        //while (!firstrole.Add(tt.Name))
+        //{
+        //  members.Remove(tt);
+        //  temp.Add(tt);
+        //  tt = members.OrderBy(a => a.TT).First();
 
-      //  //}
-      //  videonames.Add(video.Name);
-      //  members.Remove(video);
-      //  video.Video = meetingDates[i];
-      //  i++;
-      //}
-        List<MemberModel> members = new List<MemberModel>(_members);
+        //}
+        videonames.Add(video.Name);
+        members.Remove(video);
+        video.Video = meetingDates[i];
+        i++;
+        foreach (var im in iterationMembers)
+          members.Add(im);
+      }
+
+      if (File.Exists("C:\\Users\\mike\\Documents\\TI\\MeetingsPerMonthNext.csv"))
+      {
+        File.Delete("C:\\Users\\mike\\Documents\\TI\\MeetingsPerMonthNext.csv");
+      }
+
+      using (StreamWriter file = new StreamWriter("C:\\Users\\mike\\Documents\\TI\\MeetingsPerMonthNext.csv"))
+      {
+        string dates = "Role ";
+        foreach (var meeting in meetingDates)
+        {
+          dates += ", " + meeting.ToString("MMMM dd");
+        }
+        foreach (var role in regularTemplate)
+        {
+
+        }
+        //string dates = "Role, " + meetingDates[0].ToString("MMMM dd") 
+        file.WriteLine(dates);
+        string row1 = "Toastmaster," + tnames[0] + "," + tnames[1] + "," + tnames[2] + "," + tnames[3] + "," + tnames[4]; //+ "," + tnames[5];
+        file.WriteLine(row1);
+        row1 = "Speaker 1," + snames[0] + "," + snames[2] + "," + snames[4] + "," + snames[6] + "," + snames[8];// + "," + snames[10];
+        file.WriteLine(row1);
+        row1 = "Speaker 2," + snames[1] + "," + snames[3] + "," + snames[5] + "," + snames[7] + "," + snames[9];// + "," + snames[11];
+        file.WriteLine(row1);
+        row1 = "GE," + gnames[0] + "," + gnames[1] + "," + gnames[2] + "," + gnames[3] + "," + gnames[4];// + "," + gnames[5];
+        file.WriteLine(row1);
+        row1 = "Eval 1," + enames[0] + "," + enames[2] + "," + enames[4] + "," + enames[6] + "," + enames[8];// + "," + enames[10];
+        file.WriteLine(row1);
+        row1 = "Eval 2," + enames[1] + "," + enames[3] + "," + enames[5] + "," + enames[7] + "," + enames[9];// + "," + enames[11];
+        file.WriteLine(row1);
+        row1 = "TT," + ttnames[0] + "," + ttnames[1] + "," + ttnames[2] + "," + ttnames[3] + "," + tnames[4];// + "," + tnames[5];
+        file.WriteLine(row1);
+        row1 = "Ah ," + ahnames[0] + "," + ahnames[1] + "," + ahnames[2] + "," + ahnames[3] + "," + ahnames[4];// + "," + ahnames[5];
+        file.WriteLine(row1);
+        row1 = "Timer," + timernames[0] + "," + timernames[1] + "," + timernames[2] + "," + timernames[3] + "," + timernames[4];// + "," + timernames[5];
+        file.WriteLine(row1);
+        row1 = "Gram," + grnames[0] + "," + grnames[1] + "," + grnames[2] + "," + grnames[3] + "," + grnames[4];// + "," + grnames[5];
+        file.WriteLine(row1);
+        row1 = "Quiz," + quiznames[0] + "," + quiznames[1] + "," + quiznames[2] + "," + quiznames[3] + "," + quiznames[4];// + "," + quiznames[5];
+        file.WriteLine(row1);
+        row1 = "Video," + videonames[0] + "," + videonames[1] + "," + videonames[2] + "," + videonames[3] + "," + videonames[4];// + "," + videonames[5];
+        file.WriteLine(row1);
+        row1 = "HS," + hnames[0] + "," + hnames[1] + "," + hnames[2] + "," + hnames[3] + "," + hnames[4];// + "," + hnames[5];
+        file.WriteLine(row1);
+
+      }
+    }
+    void GetRolesPerMeeting(List<DateTime> meetingDates)
+    {
+      //List<MemberModel> localMembers = new List<MemberModel>(members);
+      //members.CopyTo(localMembers);
+      //HashSet<string> firstrole = new HashSet<string>();
+      int i = 0;
+      HashSet<string> meeting1 = new HashSet<string>();
+      HashSet<string> meeting2 = new HashSet<string>();
+      HashSet<string> meeting3 = new HashSet<string>();
+      HashSet<string> meeting4 = new HashSet<string>();
+      HashSet<string> meeting5 = new HashSet<string>();
+
+      List<HashSet<string>> meetings = new List<HashSet<string>>();
+      foreach (var t in meetingDates)
+      {
+        meetings.Add(new HashSet<string>());
+      }
+
+      //"speaker")
+      List<string> snames = new List<string>();
+      List<string> enames = new List<string>();
+      List<string> tnames = new List<string>();
+      List<string> gnames = new List<string>();
+      List<string> ttnames = new List<string>();
+      List<string> ahnames = new List<string>();
+      List<string> grnames = new List<string>();
+      List<string> timernames = new List<string>();
+      List<string> quiznames = new List<string>();
+      List<string> videonames = new List<string>();
+      List<string> hnames = new List<string>();
+
+      List<MemberModel> members = new List<MemberModel>(_members.Where(m => m.Name != "Mike Frith").ToList());
 
       while (i <= meetingDates.Count() - 1)
       {
         int meetingsout = i + 1;
         var iterationMembers = members.Where(it => it.MeetingsOut.Contains(meetingsout)).ToList();
-        foreach(var im in iterationMembers)
+        foreach (var im in iterationMembers)
           members.Remove(im);
 
         var speaker = members.OrderBy(a => a.Speaker).First();
@@ -759,6 +919,9 @@ namespace ScheduleUI
         i++;
         foreach (var im in iterationMembers)
           members.Add(im);
+
+        if (members.Count < 12)
+          members = new List<MemberModel>(_members);
       }
 
       if (File.Exists("C:\\Users\\mike\\Documents\\TI\\MeetingsNext.csv"))
@@ -768,38 +931,47 @@ namespace ScheduleUI
 
       using (StreamWriter file = new StreamWriter("C:\\Users\\mike\\Documents\\TI\\MeetingsNext.csv"))
       {
-        string dates = "Role, Nov 6, Nov 13, Nov 20, Nov 22, Nov 27";
+        string dates = "Role ";
+        foreach (var meeting in meetingDates)
+        {
+          dates += ", " + meeting.ToString("MMMM dd");
+        }
+        foreach (var role in regularTemplate)
+        {
+
+        }
+        //string dates = "Role, " + meetingDates[0].ToString("MMMM dd") 
         file.WriteLine(dates);
-        string row1 = "Toastmaster," + tnames[0] + "," + tnames[1];// + "," + tnames[2] + "," + tnames[3] + "," + tnames[4]; //+ "," + tnames[5];
+        string row1 = "Toastmaster," + tnames[0] + "," + tnames[1] + "," + tnames[2] + "," + tnames[3] + "," + tnames[4]; //+ "," + tnames[5];
         file.WriteLine(row1);
-        row1 = "Speaker 1," + snames[0] + "," + snames[2];// + "," + snames[4] + "," + snames[6] + "," + snames[8];// + "," + snames[10];
+        row1 = "Speaker 1," + snames[0] + "," + snames[2] + "," + snames[4] + "," + snames[6] + "," + snames[8];// + "," + snames[10];
         file.WriteLine(row1);
-        row1 = "Speaker 2," + snames[1] + "," + snames[3];// + "," + snames[5] + "," + snames[7] + "," + snames[9];// + "," + snames[11];
+        row1 = "Speaker 2," + snames[1] + "," + snames[3] + "," + snames[5] + "," + snames[7] + "," + snames[9];// + "," + snames[11];
         file.WriteLine(row1);
-        row1 = "GE," + gnames[0] + "," + gnames[1];// + "," + gnames[2] + "," + gnames[3] + "," + gnames[4];// + "," + gnames[5];
+        row1 = "GE," + gnames[0] + "," + gnames[1] + "," + gnames[2] + "," + gnames[3] + "," + gnames[4];// + "," + gnames[5];
         file.WriteLine(row1);
-        row1 = "Eval 1," + enames[0] + "," + enames[2];// + "," + enames[4] + "," + enames[6] + "," + enames[8];// + "," + enames[10];
+        row1 = "Eval 1," + enames[0] + "," + enames[2] + "," + enames[4] + "," + enames[6] + "," + enames[8];// + "," + enames[10];
         file.WriteLine(row1);
-        row1 = "Eval 2," + enames[1] + "," + enames[3];// + "," + enames[5] + "," + enames[7] + "," + enames[9];// + "," + enames[11];
+        row1 = "Eval 2," + enames[1] + "," + enames[3] + "," + enames[5] + "," + enames[7] + "," + enames[9];// + "," + enames[11];
         file.WriteLine(row1);
-        row1 = "TT," + ttnames[0] + "," + ttnames[1];// + "," + ttnames[2] + "," + ttnames[3] + "," + tnames[4];// + "," + tnames[5];
+        row1 = "TT," + ttnames[0] + "," + ttnames[1] + "," + ttnames[2] + "," + ttnames[3] + "," + tnames[4];// + "," + tnames[5];
         file.WriteLine(row1);
-        row1 = "Ah ," + ahnames[0] + "," + ahnames[1];// + "," + ahnames[2] + "," + ahnames[3] + "," + ahnames[4];// + "," + ahnames[5];
+        row1 = "Ah ," + ahnames[0] + "," + ahnames[1] + "," + ahnames[2] + "," + ahnames[3] + "," + ahnames[4];// + "," + ahnames[5];
         file.WriteLine(row1);
-        row1 = "Timer," + timernames[0] + "," + timernames[1];// + "," + timernames[2] + "," + timernames[3] + "," + timernames[4];// + "," + timernames[5];
+        row1 = "Timer," + timernames[0] + "," + timernames[1] + "," + timernames[2] + "," + timernames[3] + "," + timernames[4];// + "," + timernames[5];
         file.WriteLine(row1);
-        row1 = "Gram," + grnames[0] + "," + grnames[1];// + "," + grnames[2] + "," + grnames[3] + "," + grnames[4];// + "," + grnames[5];
+        row1 = "Gram," + grnames[0] + "," + grnames[1] + "," + grnames[2] + "," + grnames[3] + "," + grnames[4];// + "," + grnames[5];
         file.WriteLine(row1);
-        row1 = "Quiz," + quiznames[0] + "," + quiznames[1];// + "," + quiznames[2] + "," + quiznames[3] + "," + quiznames[4];// + "," + quiznames[5];
+        row1 = "Quiz," + quiznames[0] + "," + quiznames[1] + "," + quiznames[2] + "," + quiznames[3] + "," + quiznames[4];// + "," + quiznames[5];
         file.WriteLine(row1);
-        row1 = "Video," + videonames[0] + "," + videonames[1];// + "," + videonames[2] + "," + videonames[3] + "," + videonames[4];// + "," + videonames[5];
+        row1 = "Video," + videonames[0] + "," + videonames[1] + "," + videonames[2] + "," + videonames[3] + "," + videonames[4];// + "," + videonames[5];
         file.WriteLine(row1);
-        row1 = "HS," + hnames[0] + "," + hnames[1];// + "," + hnames[2] + "," + hnames[3] + "," + hnames[4];// + "," + hnames[5];
+        row1 = "HS," + hnames[0] + "," + hnames[1] + "," + hnames[2] + "," + hnames[3] + "," + hnames[4];// + "," + hnames[5];
         file.WriteLine(row1);
 
       }
     }
-  
+
     public void Reset()
     {
 
@@ -844,7 +1016,7 @@ namespace ScheduleUI
       //meetingModel.Video = Video;
       //meetingModel.HotSeat = HotSeat;
       //meetingModel.Save(meetingID);
-      
+
     }
   }
 }

@@ -19,8 +19,9 @@ namespace ScheduleUI
 
     }
 
+    // the only members list
     private List<MemberModel> _members = new List<MemberModel>();
-    //private List<MemberModel> _memberList = null;
+    
     public List<MemberModel> Members
     {
       get

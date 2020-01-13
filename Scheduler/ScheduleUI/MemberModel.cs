@@ -137,10 +137,10 @@ namespace SchedulerUI
 
       }
 
-      if (member.Name == "Lisa Winn" || member.Name == "Mani Vijayakumar")
-        member.IsCurrentMember = false;
-      else
-        member.IsCurrentMember = true;
+      //if (member.Name == "Lisa Winn" || member.Name == "Mani Vijayakumar")
+      //  member.IsCurrentMember = false;
+      //else
+      //  member.IsCurrentMember = true;
       return member;
 
     }

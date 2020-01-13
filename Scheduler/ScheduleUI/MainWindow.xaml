@@ -87,7 +87,8 @@
         <StackPanel>
           <TextBlock Margin="10" FontSize="14">Member Information</TextBlock>
           <DockPanel HorizontalAlignment="Left" LastChildFill="False">
-            <Button Margin="10" Width="100" Height="25" HorizontalAlignment="Left"  >New Member</Button>
+            <Button Margin="10" Width="100" Height="25" HorizontalAlignment="Left" Content="New Member" 
+                    Command="{Binding NewMemberCmd}"/>
             <Button Margin="10" Width="100" Height="25" Content="Save" Command="{Binding SaveMembersCmd}"/>
           </DockPanel>
           <DockPanel HorizontalAlignment="Left" LastChildFill="False">
