@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Globalization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace ScheduleUI
 {
@@ -55,7 +57,42 @@ namespace ScheduleUI
     public bool GenerateForMonth
     {
       get { return _generateForMonth; }
-      set { _generateForMonth = value; }
+      set { _generateForMonth = value;
+        NotifyPropertyChanged(() => GenerateForMonth);
+        NotifyPropertyChanged(() => IsGenerateForMonth);
+      }
+    }
+
+    private bool _generateForFriday = true;
+    public bool GenerateForFriday
+    {
+      get { return _generateForFriday; }
+      set
+      {
+        _generateForFriday = value;
+        NotifyPropertyChanged(() => GenerateForFriday);
+        //NotifyPropertyChanged(() => IsGenerateForMonth);
+      }
+    }
+    //ItemsSource="{Binding Months}" SelectedIndex="0" SelectedItem="{Binding MonthToGenerate}"/>
+    private string _monthToGenerateFor = "January";
+
+    private List<string> _months = new List<string>(new string[] { "January", "February", "March","April","May","June","July","August","September","October","November","December"});
+
+    public string MonthToGenerateFor
+    {
+      get { return _monthToGenerateFor; }
+      set { _monthToGenerateFor = value; }
+    }
+    public List<string> Months
+    {
+      get { return _months; }
+      set {; }
+    }
+    public bool IsGenerateForMonth
+    {
+      get { return !_generateForMonth; }
+      set {; }
     }
     private List<string> _meetingTemplates = new List<string>(new string[] { "Regular Meeting", "Three Speaker Meeting", "Speakathon" });
     public List<string> MeetingTemplates
@@ -212,12 +249,15 @@ namespace ScheduleUI
       //t = _members.Where(it => it.Name != "Lisa Winn");
       List<MemberModel> temp = t.ToList();
       _temporarymemberList = new List<MemberModel>(temp);
+      List<MeetingModelRegular> list = null;
       if (GenerateForMonth)
       {
         // generate one meeting at a time and show on pane
         // write them out when okayed, then show the next one
         _newMeeting = new MeetingModelRegularVM(_temporarymemberList);
-        _newMeeting.Generate();
+        _newMeeting.Month = MonthToGenerateFor;
+        list = _newMeeting.GenerateForMonth(GenerateForFriday);
+        
 
       }
       else
@@ -231,6 +271,11 @@ namespace ScheduleUI
         NotifyPropertyChanged(() => GenerateButtonEnabled);
         NotifyPropertyChanged(() => ResetButtonEnabled);
       }
+      // _members.Sort();
+      IsoDateTimeConverter timeFormat = new IsoDateTimeConverter();
+      timeFormat.DateTimeFormat = "yyyy-MM-dd";
+      File.WriteAllText("C:\\Users\\mike\\Documents\\TI\\Data\\MembersStatus0.json", JsonConvert.SerializeObject(_members, timeFormat));
+      
       return;
     }
     public MeetingsViewModel(List<MemberModel> members)
@@ -271,23 +316,33 @@ namespace ScheduleUI
       //}
 
       List<MeetingModelBase> theList = new List<MeetingModelBase>();
-      using (StreamReader strmReader = new StreamReader("C:\\Users\\mike\\Documents\\TI\\Meetings4.json"))//, FileMode.Open, FileAccess.Read))
-      {
-        //var thefile = strmReader.ReadToEnd();
-        var t = new List<MeetingModelBase>();
-        string meeting; 
-        while ((meeting = strmReader.ReadLine()) != null)
-        {
-          MeetingModelBase bah = new MeetingModelBase();
-          var a = bah.Deserialize(meeting);
-          t.Add(a);
-        }
 
-        t.Reverse();
-        _meetings = new ObservableCollection<MeetingModelBase>(t);
+      // next 3 lines for reading and writing
+      string json = File.ReadAllText("C:\\Users\\mike\\Documents\\TI\\Data\\Meetings5.json");
+      var meetingList = JsonConvert.DeserializeObject<List<MeetingModelBase>>(json);
+      _meetings = new ObservableCollection<MeetingModelBase>(meetingList);
 
-      }
+      //File.WriteAllText("myobjects.json", JsonConvert.SerializeObject(playerList));
 
+
+      //using (StreamReader strmReader = new StreamReader("C:\\Users\\mike\\Documents\\TI\\Data\\Meetings4.json"))//, FileMode.Open, FileAccess.Read))
+      //{
+      //  //var thefile = strmReader.ReadToEnd();
+      //  var t = new List<MeetingModelBase>();
+      //  string meeting;
+      //  while ((meeting = strmReader.ReadLine()) != null)
+      //  {
+      //    MeetingModelBase bah = new MeetingModelBase();
+      //    var a = bah.Deserialize(meeting);
+      //    t.Add(a);
+      //  }
+
+      //  //t.Reverse();
+      //  _meetings = new ObservableCollection<MeetingModelBase>(t);
+
+      //}
+
+      //File.WriteAllText("C:\\Users\\mike\\Documents\\TI\\Data\\Meetings5.json", JsonConvert.SerializeObject(_meetings));
       //using (StreamWriter strmWriter = new StreamWriter("C:\\Users\\mike\\Documents\\TI\\Meetings5.json", true))
       //{
       //  //theList.Sort((x, y) => DateTime.Compare(x.DayOfMeeting, y.DayOfMeeting));
@@ -324,6 +379,7 @@ namespace ScheduleUI
       //    strmWriter.WriteLine(t);
       //  }
       //  //WriteMeetingToFile("C:\\Users\\mike\\Documents\\TI\\Meetings4.txt", _meetingsRegular[50]);
+
 
       //  strmWriter.Close();
 

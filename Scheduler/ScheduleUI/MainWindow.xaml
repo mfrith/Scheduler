@@ -10,6 +10,7 @@
         Title="Club Scheduler" Height="450" Width="800">
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="Bool2Vis" />
+    <local:InverseBoolConverter x:Key="InverseBool" />
     <DataTemplate x:Key="RegularTemplate">
       <DataGrid ItemsSource="{Binding Meetings}" AutoGenerateColumns="False" >
         <DataGrid.LayoutTransform>
@@ -68,44 +69,91 @@
     </DataTemplate>
     <DataTemplate x:Key="MemberInfo">
       <StackPanel>
-      <CheckBox Content="Is Current" IsChecked="{Binding IsCurrent, Mode=TwoWay}"/>
-      <CheckBox Content="Can be Toastmaster" IsChecked="{Binding CanBeToastmaster, Mode=TwoWay}"/>
-      <CheckBox Content="Can Be Evaluator" IsChecked="{Binding CanBeEvaluator, Mode=TwoWay}"/>
-      <!--<CheckBox Content="Is Current" IsChecked="{Binding IsCurrent, Mode=TwoWay}"/>
+        <CheckBox Content="Is Current" IsChecked="{Binding CurrentMemberEdit.IsCurrent, Mode=TwoWay}"/>
+        <CheckBox Content="Can be Toastmaster" IsChecked="{Binding CurrentMemberEdit.CanBeToastmaster, Mode=TwoWay}"/>
+        <CheckBox Content="Can Be Evaluator" IsChecked="{Binding CurrentMemberEdit.CanBeEvaluator, Mode=TwoWay}"/>
+        <!--<CheckBox Content="Is Current" IsChecked="{Binding IsCurrent, Mode=TwoWay}"/>
       <CheckBox Content="Is Current" IsChecked="{Binding IsCurrent, Mode=TwoWay}"/>-->
       </StackPanel>
     </DataTemplate>
   </Window.Resources>
   <DockPanel>
-   
+
     <TabControl TabStripPlacement="Left" Margin="0,0,0,10"  >
       <TabItem Name="General" Header="General" DataContext="{Binding Tabs[0]}">
         <!--<Button Margin="10" Width="100" Height="25" HorizontalAlignment="Left" >New Member</Button>-->
 
       </TabItem>
       <TabItem Name="Members" Header="Members" DataContext="{Binding Tabs[1]}">
-        <StackPanel>
-          <TextBlock Margin="10" FontSize="14">Member Information</TextBlock>
-          <DockPanel HorizontalAlignment="Left" LastChildFill="False">
-            <Button Margin="10" Width="100" Height="25" HorizontalAlignment="Left" Content="New Member" 
+        <!--members vm-->
+        <TabControl>
+          <TabItem  Header="General" Padding="5">
+            <StackPanel>
+              <TextBlock Margin="10" FontSize="14">Member Information</TextBlock>
+              <DockPanel HorizontalAlignment="Left" LastChildFill="False">
+                <Button Margin="10" Width="100" Height="25" HorizontalAlignment="Left" Content="New Member" 
                     Command="{Binding NewMemberCmd}"/>
-            <Button Margin="10" Width="100" Height="25" Content="Save" Command="{Binding SaveMembersCmd}"/>
-          </DockPanel>
-          <DockPanel HorizontalAlignment="Left" LastChildFill="False">
-            <ComboBox Margin="10" Width="150" Height="25" HorizontalAlignment="Left" 
+                <Button Margin="10" Width="100" Height="25" Content="Save" Command="{Binding SaveMembersCmd}"/>
+              </DockPanel>
+              <DockPanel HorizontalAlignment="Left" LastChildFill="False">
+                <ComboBox Margin="10" Width="150" Height="25" HorizontalAlignment="Left" 
                     ItemsSource="{Binding Members}" DisplayMemberPath="Name" SelectedValuePath="Name"
                       SelectedValue="{Binding MemberToEdit}"/>
 
-            <Button Margin="10" Width="100" Height="25" HorizontalAlignment="Left" Command="{Binding EditMemberCmd}">Edit Member</Button>
-          </DockPanel>
-          <StackPanel HorizontalAlignment="Left">
+                <Button Margin="10" Width="100" Height="25" HorizontalAlignment="Left" Command="{Binding EditMemberCmd}">Edit Member</Button>
+              </DockPanel>
+              <StackPanel Width="600" HorizontalAlignment="Left">
+                <DockPanel HorizontalAlignment="Center" Width="500">
+                  <StackPanel>
+                    <CheckBox Content="Is Current" IsChecked="{Binding CurrentMemberEdit.IsCurrent, Mode=TwoWay}"/>
+                    <CheckBox Content="Can be Toastmaster" IsChecked="{Binding CurrentMemberEdit.CanBeToastmaster, Mode=TwoWay}"/>
+                    <CheckBox Content="Can Be Evaluator" IsChecked="{Binding CurrentMemberEdit.CanBeEvaluator, Mode=TwoWay}"/>
+                  </StackPanel>
+                  <StackPanel>
+                    <TextBlock Text="Meetings Out" HorizontalAlignment="Center"/>
+                    <Calendar SelectionMode="MultipleRange" />
 
-            <CheckBox Content="Is Current" IsChecked="{Binding IsCurrent, Mode=TwoWay}"/>
-            <CheckBox Content="Can be Toastmaster" IsChecked="{Binding CanBeToastmaster, Mode=TwoWay}"/>
-            <CheckBox Content="Can Be Evaluator" IsChecked="{Binding CanBeEvaluator, Mode=TwoWay}"/>
-          </StackPanel>
-        </StackPanel>
-        
+                  </StackPanel>
+                </DockPanel>
+              </StackPanel>
+            </StackPanel>
+          </TabItem>
+          <TabItem Header="Role History" Padding="5">
+            <StackPanel Width="600" HorizontalAlignment="Left">
+              <!--<DockPanel HorizontalAlignment="Left" LastChildFill="False">-->
+                <ComboBox Margin="10" Width="150" Height="25" HorizontalAlignment="Left" 
+                    ItemsSource="{Binding Members}" DisplayMemberPath="Name" 
+                      SelectedValue="{Binding SetMemberRoleStatus}"/>
+              <!--<ListBox ItemsSource="{Binding Roles}" Width="80" ></ListBox>-->
+              <Grid></Grid>
+              <DockPanel>
+                <TextBlock DockPanel.Dock="Left" Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Toastmaster"/>
+                <TextBox Text="{Binding Member.Toastmaster}" Width="100" Margin="10,0,0,0"/>
+              </DockPanel>
+              
+                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Speaker"/>
+                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Evaluator"/>
+                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="General Evaluator"/>
+                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Table Topics"/>
+                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Ah Counter"/>
+                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Timer"/>
+                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Grammarian"/>
+                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Quiz Master"/>
+                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Video"/>
+                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Hot Seat"/>
+
+              <!--new string[] {"Toastmaster","Speaker","General Evaluator",
+                                                                  "Evaluator", "Table Topics", "Ah Counter",
+                                                                  "Timer", "Grammarian", "Quiz Master", "Video", "Hot Seat" });-->
+              <!--<Button Margin="10" Width="100" Height="25" HorizontalAlignment="Left" Command="{Binding EditMemberCmd}">Edit Member</Button>-->
+              <!--</DockPanel>-->
+            </StackPanel>
+          </TabItem>
+          <TabItem Header="Speech History" Padding="7">
+            
+          </TabItem>
+
+        </TabControl>
       </TabItem>
       <!--<TabItem Name="Members" Header="Members">
         <FlowDocumentScrollViewer>
@@ -138,8 +186,12 @@
                       IsSynchronizedWithCurrentItem="True" SelectedIndex="0"
                       />-->
             <ComboBox DockPanel.Dock="Left" ItemsSource="{Binding MeetingTemplates}" SelectedIndex="0" SelectedItem="{Binding MeetingTemplate}"/>
-            <DatePicker DockPanel.Dock="Left" SelectedDate="{Binding MeetingDate, Mode=TwoWay}" Margin="20, 0,0,0"/>
+            <DatePicker DockPanel.Dock="Left" SelectedDate="{Binding MeetingDate, Mode=TwoWay}" Margin="20, 0,0,0" IsEnabled="{Binding IsGenerateForMonth}"/>
             <CheckBox DockPanel.Dock="Left" Margin="20,5,0,0" IsChecked="{Binding GenerateForMonth, Mode=TwoWay}" Content="Generate for the month"/>
+            <CheckBox DockPanel.Dock="Left" Margin="20,5,0,0" IsChecked="{Binding GenerateForFriday, Mode=TwoWay}" Content="Generate for Friday" IsEnabled="{Binding IsGenerateForMonth, Converter={StaticResource InverseBool}}"/>
+            <ComboBox DockPanel.Dock="Left" Margin="10,0,0,0" ItemsSource="{Binding Months}" SelectedIndex="0" SelectedItem="{Binding MonthToGenerateFor}"/>
+            <DatePicker DockPanel.Dock="Left" SelectedDate="{Binding MeetingDateMonth, Mode=TwoWay}" Margin="20, 0,0,0"
+                        IsEnabled="{Binding IsGenerateForMonth, Converter={StaticResource InverseBool}}" Visibility="Collapsed"/>
           </DockPanel>
           <DockPanel HorizontalAlignment="Left" LastChildFill="False">
             <Button Margin="10" Width="130" Height="25" HorizontalAlignment="Left" Command="{Binding GenerateMeetingCmd}" Content="Generate Meeting" 
@@ -213,12 +265,14 @@
               <DataGridTextColumn Header="Quiz" Binding="{Binding Path=Quiz.Name}"/>
               <DataGridTextColumn Header="Video" Binding="{Binding Path=Video.Name}"/>
               <DataGridTextColumn Header="HotSeat" Binding="{Binding Path=HotSeat.Name}"/>
-    --><!--public List
+    -->
+          <!--public List
               <int>Attendees { get; set; }
     public MemberModel TTWinner { get; set; }
     public List
                 <int>TTContestants { get; set; }-->
-                  <!--<DataGridTextColumn Header="Day of Meeting"/>--><!--
+          <!--<DataGridTextColumn Header="Day of Meeting"/>-->
+          <!--
             </DataGrid.Columns>
           </DataGrid>-->
         </StackPanel>
@@ -271,19 +325,21 @@
             <DataGridTextColumn Header="Quiz" Binding="{Binding Path=QuizMaster}"/>
             <DataGridTextColumn Header="Video" Binding="{Binding Path=Video}"/>
             <DataGridTextColumn Header="HotSeat" Binding="{Binding Path=HotSeat}"/>
-            --><!--public List
+            -->
+        <!--public List
               <int>Attendees { get; set; }
     public MemberModel TTWinner { get; set; }
     public List
                 <int>TTContestants { get; set; }-->
-            <!--<DataGridTextColumn Header="Day of Meeting"/>--><!--
+        <!--<DataGridTextColumn Header="Day of Meeting"/>-->
+        <!--
           </DataGrid.Columns>
         </DataGrid>-->
         <StackPanel>
-        <DockPanel HorizontalAlignment="Left" LastChildFill="False">
-          <Button Margin="10" Width="130" Height="25" HorizontalAlignment="Left" Command="{Binding GenerateReportCmd}" Content="Generate Report" 
+          <DockPanel HorizontalAlignment="Left" LastChildFill="False">
+            <Button Margin="10" Width="130" Height="25" HorizontalAlignment="Left" Command="{Binding GenerateReportCmd}" Content="Generate Report" 
                   />
-        </DockPanel>
+          </DockPanel>
         </StackPanel>
       </TabItem>
     </TabControl>

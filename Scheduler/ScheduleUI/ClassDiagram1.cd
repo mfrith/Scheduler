@@ -1,2 +1,205 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram /> 
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ScheduleUI.App" Collapsed="true">
+    <Position X="11.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScheduleUI.GeneralViewModel" Collapsed="true">
+    <Position X="13.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GeneralViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScheduleUI.MainViewModel" Collapsed="true">
+    <Position X="15.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>MainViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScheduleUI.MainWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="17.25" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAIAAA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ScheduleUI.MeetingsViewModel" Collapsed="true">
+    <Position X="8.25" Y="2.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>igCBkIAAALEgACJDBIwAgEWQgAAAIDAEJYMLIgLAgQA=</HashCode>
+      <FileName>MeetingsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScheduleUI.MeetingView" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13.75" Y="1.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MeetingView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ScheduleUI.MeetingTypeSelector" Collapsed="true">
+    <Position X="11.5" Y="1.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAYAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MeetingViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScheduleUI.MeetingModelRegularVM" Collapsed="true">
+    <Position X="0.5" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AkAAgIAAAABghADAAAAAFAAAASAAoOAXIIkAFEBPAZg=</HashCode>
+      <FileName>MeetingViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScheduleUI.MembersViewModel" Collapsed="true">
+    <Position X="5" Y="1.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAABgIAAAAIAgAhQAAIIAAAACQAAAAAAAAAEDAAAAAA=</HashCode>
+      <FileName>MembersViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScheduleUI.MemberInfoViewModel" Collapsed="true">
+    <Position X="7.25" Y="1.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAIgCAIAAAwAAAAABABAQAAAAAAgIAAAAoCAAAAAA=</HashCode>
+      <FileName>MemberViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScheduleUI.NewMemberDialog" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="17.25" Y="1.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>NewMemberDialog.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ScheduleUI.NewMemberViewModel" Collapsed="true">
+    <Position X="11.5" Y="2.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>NewMemberViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScheduleUI.RelayCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13.75" Y="2.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEACAAQAAEAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>RelayCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ScheduleUI.ReportsViewModel" Collapsed="true">
+    <Position X="15.5" Y="2.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAIBAAAAEAAABAEAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>ReportsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchedulerUI.MeetingModelBase" Collapsed="true">
+    <Position X="5.75" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AEAAgAAAAAAggAAAAAAABAAAASBAgOAQAAAAAAAEAZg=</HashCode>
+      <FileName>MeetingModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchedulerUI.MeetingContest" Collapsed="true">
+    <Position X="2.5" Y="4.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>MeetingModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchedulerUI.MeetingModelRegular" Collapsed="true">
+    <Position X="5.75" Y="4.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAQAAACAA=</HashCode>
+      <FileName>MeetingModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchedulerUI.MeetingModel3Speaker" Collapsed="true">
+    <Position X="8" Y="4.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>MeetingModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchedulerUI.MeetingModel4Speaker" Collapsed="true">
+    <Position X="8" Y="6.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAACAAA=</HashCode>
+      <FileName>MeetingModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchedulerUI.MeetingModel5Speaker" Collapsed="true">
+    <Position X="8" Y="7.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>MeetingModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchedulerUI.MemberModel" Collapsed="true">
+    <Position X="15.25" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgQAAAAAAAAAAAAABAQAAChgCDAQIAAACCQFAIw=</HashCode>
+      <FileName>MemberModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PropertyChangedBase" Collapsed="true">
+    <Position X="5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAAAAAAAAgAEAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>pcb.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ViewModelBase" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAgAA=</HashCode>
+      <FileName>pcb.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="RelayCommand" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>BQQAAABAAOACABwAAEKAAAAAAAAEAAAAAgAgAADAAAA=</HashCode>
+      <FileName>pcb.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ScheduleUI.Properties.Resources" Collapsed="true">
+    <Position X="17.25" Y="2.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScheduleUI.Properties.Settings" Collapsed="true">
+    <Position X="12" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="IViewModel" Collapsed="true">
+    <Position X="15" Y="4.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>pcb.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="IView" Collapsed="true">
+    <Position X="12" Y="4.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>pcb.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

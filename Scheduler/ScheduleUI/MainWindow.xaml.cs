@@ -18,6 +18,7 @@ namespace ScheduleUI
       InitializeComponent();
       this.DataContext = new MainViewModel();
       MainViewModel a = (MainViewModel)this.DataContext;
+      a.CheckDataFiles();
       MeetingsViewModel b = (MeetingsViewModel)a.Tabs[2];
       ObservableCollection<MeetingModelBase> meetings = b.Meetings;
       DateTime lastMeeting = DateTime.ParseExact(meetings[0].DayOfMeeting, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);

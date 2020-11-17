@@ -12,7 +12,7 @@ using System.Text.Json.Serialization;
 namespace SchedulerUI
 {
   [Serializable]
-   public class MeetingModelBase
+  public class MeetingModelBase
   {
     public string MeetingType { get; set; }
     public string ID { get; set; }
@@ -42,6 +42,8 @@ namespace SchedulerUI
     {
 
     }
+
+
     public MeetingModelBase Deserialize(string json)
     {
       var options = new JsonSerializerOptions
@@ -63,6 +65,8 @@ namespace SchedulerUI
         f = new MeetingModelRegular();
       else if (meetingtype == "4")
         f = new MeetingModel4Speaker();
+      else if (meetingtype == "30" || meetingtype == "20" || meetingtype == "10")
+        f = new MeetingContest();
 
       while (reader.Read())
       {
@@ -147,6 +151,16 @@ namespace SchedulerUI
 
       string theMeeting = string.Empty;
       return theMeeting;
+    }
+  }
+
+  public class MeetingContest : MeetingModelBase
+  {
+    public List<string> Contestants { get; set; }
+
+    public MeetingContest()
+    {
+
     }
   }
 

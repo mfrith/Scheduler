@@ -12,6 +12,26 @@ namespace SchedulerUI
 
   public class MemberModel
   {
+  //  		"MemberID": 7831561 ,
+		//"Name": "Jenifer Velazco-Lopez",
+		//"Toastmaster": "0001-01-01",
+		//"Speaker": "0001-01-01",
+		//"GeneralEvaluator": "0001-01-01",
+		//"Evaluator": "0001-01-01",
+		//"TT": "0001-01-01",
+		//"Ah": "0001-01-01",
+		//"Gram": "0001-01-01",
+		//"Timer": "2020-11-18",
+		//"Quiz": "0001-01-01",
+		//"Video": "0001-01-01",
+		//"HotSeat": "0001-01-01",
+		//"HasBeenOfficer": false,
+		//"CanBeToastmaster": false,
+		//"CanBeEvaluator": false,
+		//"MeetingsOut": [],
+		//"Mentors": [],
+		//"IsCurrentMember": true
+
     public int MemberID { get; set; }
     public string Name { get; set; }
     public DateTime Toastmaster { get; set; }

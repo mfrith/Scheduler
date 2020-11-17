@@ -7,8 +7,10 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Windows.Input;
 
-//using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System.Text;
+using Newtonsoft.Json.Converters;
+using System.Runtime.InteropServices;
 
 namespace ScheduleUI
 {
@@ -44,6 +46,8 @@ namespace ScheduleUI
     {
       get { return string.IsNullOrEmpty(MemberToEdit) ? false : true; }
     }
+
+   
     public string MemberToEdit
     {
       get; set;
@@ -57,7 +61,7 @@ namespace ScheduleUI
       }
     }
 
-
+    private MemberInfoViewModel _currentMemberVM = null;
     public void EditMember()
     {
       // show properties we want to show
@@ -65,14 +69,31 @@ namespace ScheduleUI
       _currentMemberEdit = _members.Where(it => it.Name == t).First();
       NotifyPropertyChanged(() => MemberSet);
 
-      MemberInfoViewModel currentMemberVM = new MemberInfoViewModel(_currentMemberEdit);
+      _currentMemberVM = new MemberInfoViewModel(_currentMemberEdit);
 
-      //_currentMemberEdit = a.First();
+      NotifyPropertyChanged(() => CurrentMemberEdit);
     }
 
-    public MemberModel CurrentMemberEdit
+    private readonly List<string> _meetingRoles = new List<string>(new string[] {"Toastmaster","Speaker","General Evaluator",
+                                                                  "Evaluator", "Table Topics", "Ah Counter",
+                                                                  "Timer", "Grammarian", "Quiz Master", "Video", "Hot Seat" });
+    public List<string> Roles
     {
-      get { return _currentMemberEdit; }
+      get { return _meetingRoles; }
+    }
+    private MemberModel _mme;
+    public MemberModel SetMemberRoleStatus
+    {
+      get { return _mme; }
+      set { SetProperty(ref _mme, value, () => SetMemberRoleStatus);
+
+        //NotifyPropertyChanged(() => ShowMemberRoles);
+      }
+    }
+   // public 
+    public MemberInfoViewModel CurrentMemberEdit
+    {
+      get { return _currentMemberVM; }
       //set { }
     }
     private MemberModel _currentMemberEdit;
@@ -89,7 +110,7 @@ namespace ScheduleUI
     public void Load()
     {
       List<MemberModel> t = new List<MemberModel>();
-      //var reader = new JsonTextReader(new StreamReader("c:\\users\\mike\\documents\\ti\\membersstatus1.json", Encoding.GetEncoding(1251)));
+      //var reader = new JsonTextReader(new StreamReader("c:\\users\\mike\\documents\\ti\\membersstatus.json", Encoding.GetEncoding(1251)));
       //reader.SupportMultipleContent = true;
       //var serializer = new JsonSerializer();
 
@@ -100,43 +121,50 @@ namespace ScheduleUI
       //  var b = serializer.Deserialize<string>(reader);
       //}
 
-      using (StreamReader strmreader = new StreamReader("c:\\users\\mike\\documents\\ti\\MembersStatus.json"))
-      {
-        string member = string.Empty;
+      string json = File.ReadAllText("C:\\Users\\mike\\Documents\\TI\\Data\\MembersStatus0 - Copy.json");
+      var ab = JsonConvert.DeserializeObject<dynamic>(json);
+      var memberlist = JsonConvert.DeserializeObject<List<MemberModel>>(json);
+      _members = new List<MemberModel>(memberlist);
 
-        while ((member = strmreader.ReadLine()) != null)
-        {
-          MemberModel themember = new MemberModel();
-          var a = themember.Deserialize(member);
-          t.Add(a);
+      //using (StreamReader strmreader = new StreamReader("c:\\users\\mike\\documents\\ti\\data\\MembersStatus.json"))
+      //{
+      //  string member = string.Empty;
 
-        }
-        strmreader.Close();
-        //  //var e = t.Where(it => it.Name != "Lisa Winn" && it.Name != "Mike Frith");
-        //  //List<MemberModel> c = t.Where(it => it.Name != "Mike Frith" && it.Name != "Lisa Winn").ToList();
-        //  //List<MemberModel> b = c.Where(it => it.Name != "Lisa Winn").ToList();//.Where(it => it.Name != "Mike Frith");
-        //  //_members.Select(it =>)
-        //  //_members.Where(it => it.Name != "Lisa Winn");
-        _members = new List<MemberModel>(t);
-        //}
+      //  while ((member = strmreader.ReadLine()) != null)
+      //  {
+      //    MemberModel themember = new MemberModel();
+      //    var a = themember.Deserialize(member);
+      //    t.Add(a);
 
-        //t = JsonConvert.DeserializeObject<List<MemberModel>>(File.ReadAllText("C:\\Users\\mike\\Documents\\TI\\MembersStatus.json"));
-        //List<MeetingModelBase> theList = new List<MeetingModelBase>();
-        //using (StreamReader strmReader = new StreamReader("C:\\Users\\mike\\Documents\\TI\\Meetings4.json"))//, FileMode.Open, FileAccess.Read))
-        //{
-        //  //var thefile = strmReader.ReadToEnd();
-        //  var t = new List<MeetingModelBase>();
-        //  string meeting;
-        //  while ((meeting = strmReader.ReadLine()) != null)
-        //  {
-        //    MeetingModelBase bah = new MeetingModelBase();
-        //    var a = bah.Deserialize(meeting);
-        //    t.Add(a);
-        //  }
+      //  }
+      //  strmreader.Close();
+      //  //var e = t.Where(it => it.Name != "Lisa Winn" && it.Name != "Mike Frith");
+      //  //List<MemberModel> c = t.Where(it => it.Name != "Mike Frith" && it.Name != "Lisa Winn").ToList();
+      //  //List<MemberModel> b = c.Where(it => it.Name != "Lisa Winn").ToList();//.Where(it => it.Name != "Mike Frith");
+      //  //_members.Select(it =>)
+      //  //_members.Where(it => it.Name != "Lisa Winn");
+      //  _members = new List<MemberModel>(t);
+      //}
 
-        //  _meetings = new ObservableCollection<MeetingModelBase>(t);
+      //File.WriteAllText("C:\\Users\\mike\\Documents\\TI\\Data\\MembersStatus0.json", JsonConvert.SerializeObject(_members));
 
-      }
+      //t = JsonConvert.DeserializeObject<List<MemberModel>>(File.ReadAllText("C:\\Users\\mike\\Documents\\TI\\MembersStatus.json"));
+      //List<MeetingModelBase> theList = new List<MeetingModelBase>();
+      //using (StreamReader strmReader = new StreamReader("C:\\Users\\mike\\Documents\\TI\\Meetings4.json"))//, FileMode.Open, FileAccess.Read))
+      //{
+      //  //var thefile = strmReader.ReadToEnd();
+      //  var t = new List<MeetingModelBase>();
+      //  string meeting;
+      //  while ((meeting = strmReader.ReadLine()) != null)
+      //  {
+      //    MeetingModelBase bah = new MeetingModelBase();
+      //    var a = bah.Deserialize(meeting);
+      //    t.Add(a);
+      //  }
+
+      //  _meetings = new ObservableCollection<MeetingModelBase>(t);
+
+      //}
     }
 
     private void Save()
