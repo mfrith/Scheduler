@@ -415,9 +415,10 @@ namespace ScheduleUI
       if (month == 12) //december
       {
         // account for Christmas
-        //meetings.Add(firstWednesday);
+        meetings.Add(firstWednesday);
         meetings.Add(secondWednesday);
         meetings.Add(thirdWednesday);
+        meetings.Add(fourthWednesday);
         return meetings;
       }
 
@@ -565,14 +566,16 @@ namespace ScheduleUI
 
         //grnames.Add(gram.Name);
         members.Remove(gram);
-
+        if (members.Count == 0)
+          members = new List<MemberModel>(_members);
         gram.Gram = meetingDates[i];
         m.Grammarian = gram.Name;
         var timer = members.OrderBy(a => a.Timer).First();
         m.Timer = timer.Name;
         //timernames.Add(timer.Name);
         members.Remove(timer);
-
+        if (members.Count == 0)
+          members = new List<MemberModel>(_members);
         timer.Timer = meetingDates[i];
 
         var ah = members.OrderBy(a => a.Ah).First();
@@ -585,12 +588,16 @@ namespace ScheduleUI
         m.QuizMaster = quiz.Name;
         //quiznames.Add(quiz.Name);
         members.Remove(quiz);
+        if (members.Count == 0)
+          members = new List<MemberModel>(_members);
         quiz.Quiz = meetingDates[i];
 
         var video = members.OrderBy(a => a.Video).First();
         m.Video = video.Name;
         //videonames.Add(video.Name);
         members.Remove(video);
+        if (members.Count == 0)
+          members = new List<MemberModel>(_members);
         video.Video = meetingDates[i];
         i++;
         foreach (var im in iterationMembers)
@@ -600,7 +607,7 @@ namespace ScheduleUI
         //  members = new List<MemberModel>(_members);
       }
 
-      File.WriteAllText("C:\\Users\\mike\\Documents\\TI\\Data\\MembersStatus0.json", JsonConvert.SerializeObject(_members));
+      //File.WriteAllText("C:\\Users\\mike\\Documents\\TI\\Data\\MembersStatus0.json", JsonConvert.SerializeObject(_members));
       return meetings;
 
     }

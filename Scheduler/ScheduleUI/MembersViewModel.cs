@@ -109,7 +109,7 @@ namespace ScheduleUI
     // move these to class view model loading?
     public void Load()
     {
-      List<MemberModel> t = new List<MemberModel>();
+      //List<MemberModel> t = new List<MemberModel>();
       //var reader = new JsonTextReader(new StreamReader("c:\\users\\mike\\documents\\ti\\membersstatus.json", Encoding.GetEncoding(1251)));
       //reader.SupportMultipleContent = true;
       //var serializer = new JsonSerializer();
@@ -122,7 +122,7 @@ namespace ScheduleUI
       //}
 
       string json = File.ReadAllText("C:\\Users\\mike\\Documents\\TI\\Data\\MembersStatus0 - Copy.json");
-      var ab = JsonConvert.DeserializeObject<dynamic>(json);
+      //var ab = JsonConvert.DeserializeObject<dynamic>(json);
       var memberlist = JsonConvert.DeserializeObject<List<MemberModel>>(json);
       _members = new List<MemberModel>(memberlist);
 
