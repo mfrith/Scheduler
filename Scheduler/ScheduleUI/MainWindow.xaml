@@ -121,26 +121,43 @@
           <TabItem Header="Role History" Padding="5">
             <StackPanel Width="600" HorizontalAlignment="Left">
               <!--<DockPanel HorizontalAlignment="Left" LastChildFill="False">-->
-                <ComboBox Margin="10" Width="150" Height="25" HorizontalAlignment="Left" 
+              <ComboBox Margin="10" Width="150" Height="25" HorizontalAlignment="Left" 
                     ItemsSource="{Binding Members}" DisplayMemberPath="Name" 
                       SelectedValue="{Binding SetMemberRoleStatus}"/>
               <!--<ListBox ItemsSource="{Binding Roles}" Width="80" ></ListBox>-->
-              <Grid></Grid>
-              <DockPanel>
-                <TextBlock DockPanel.Dock="Left" Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Toastmaster"/>
-                <TextBox Text="{Binding Member.Toastmaster}" Width="100" Margin="10,0,0,0"/>
-              </DockPanel>
-              
-                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Speaker"/>
-                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Evaluator"/>
-                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="General Evaluator"/>
-                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Table Topics"/>
-                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Ah Counter"/>
-                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Timer"/>
-                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Grammarian"/>
-                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Quiz Master"/>
-                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Video"/>
-                <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Hot Seat"/>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="100"/>
+                  <ColumnDefinition Width="150"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+              </Grid>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Toastmaster"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Member.Toastmaster}" Width="100" Margin="10,0,0,0"/>
+
+
+              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Speaker"/>
+              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Evaluator"/>
+              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="General Evaluator"/>
+              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Table Topics"/>
+              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Ah Counter"/>
+              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Timer"/>
+              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Grammarian"/>
+              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Quiz Master"/>
+              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Video"/>
+              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Hot Seat"/>
 
               <!--new string[] {"Toastmaster","Speaker","General Evaluator",
                                                                   "Evaluator", "Table Topics", "Ah Counter",
@@ -150,7 +167,7 @@
             </StackPanel>
           </TabItem>
           <TabItem Header="Speech History" Padding="7">
-            
+
           </TabItem>
 
         </TabControl>

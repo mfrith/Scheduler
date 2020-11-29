@@ -278,9 +278,12 @@ namespace ScheduleUI
       
       return;
     }
-    public MeetingsViewModel(List<MemberModel> members)
+
+    private string _home = string.Empty;
+    public MeetingsViewModel(List<MemberModel> members, string location)
     {
       _members = members;
+      _home = location;
     }
 
     private bool _showMeeting;
@@ -318,12 +321,29 @@ namespace ScheduleUI
       List<MeetingModelBase> theList = new List<MeetingModelBase>();
 
       // next 3 lines for reading and writing
-      string json = File.ReadAllText("C:\\Users\\mike\\Documents\\TI\\Data\\Meetings5.json");
+      // if no list create one?
+      if (!Directory.Exists(_home + "\\Data"))
+        Directory.CreateDirectory(_home + "\\Data");
+
+      FileStream fs = null;
+      if (!File.Exists(_home + "\\Data\\meetings5.json"))
+      {
+        fs = File.Create(_home + "\\Data\\meetings5.json");
+        fs.Close();
+      }
+
+      string json = File.ReadAllText(_home + "\\Data\\meetings5.json");
       var meetingList = JsonConvert.DeserializeObject<List<MeetingModelBase>>(json);
-      _meetings = new ObservableCollection<MeetingModelBase>(meetingList);
+      if (meetingList == null)
+        _meetings = new ObservableCollection<MeetingModelBase>();
+      else
+        _meetings = new ObservableCollection<MeetingModelBase>(meetingList);
+
+
+      //string json = File.ReadAllText("C:\\Users\\mike\\Documents\\TI\\Data\\Meetings5.json");
+      //_meetings = new ObservableCollection<MeetingModelBase>(meetingList);
 
       //File.WriteAllText("myobjects.json", JsonConvert.SerializeObject(playerList));
-
 
       //using (StreamReader strmReader = new StreamReader("C:\\Users\\mike\\Documents\\TI\\Data\\Meetings4.json"))//, FileMode.Open, FileAccess.Read))
       //{

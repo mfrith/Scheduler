@@ -9,9 +9,10 @@ namespace ScheduleUI
 {
   class GeneralViewModel
   {
-    public GeneralViewModel()
+    private string _home = string.Empty;
+    public GeneralViewModel(string location)
     {
-
+      _home = location;
     }
 
     public void Button_Click(object sender, RoutedEventArgs e)

@@ -11,8 +11,10 @@ namespace ScheduleUI
   {
     List<MeetingModelBase> _meetings;
     List<MemberModel> _members;
-    public ReportsViewModel(List<MeetingModelBase> meetings, List<MemberModel> members)
+    private string _home = string.Empty;
+    public ReportsViewModel(List<MeetingModelBase> meetings, List<MemberModel> members, string location)
     {
+      _home = location;
       _meetings = meetings;
       _members = members;
     }

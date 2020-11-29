@@ -21,14 +21,14 @@ namespace ScheduleUI
       a.CheckDataFiles();
       MeetingsViewModel b = (MeetingsViewModel)a.Tabs[2];
       ObservableCollection<MeetingModelBase> meetings = b.Meetings;
-      DateTime lastMeeting = DateTime.ParseExact(meetings[0].DayOfMeeting, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
-      bool resolved = "1" == meetings[0].Resolved;
-      if (!resolved)
-      {
-        // pop up view
-        //MeetingViewModel currentMeeting = new MeetingViewModel(meetings[0]);
-        meetings[0].Resolved = "1";
-      }
+      //DateTime lastMeeting = DateTime.ParseExact(meetings[0].DayOfMeeting, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+      //bool resolved = "1" == meetings[0].Resolved;
+      //if (!resolved)
+      //{
+      //  // pop up view
+      //  //MeetingViewModel currentMeeting = new MeetingViewModel(meetings[0]);
+      //  meetings[0].Resolved = "1";
+      //}
       //load data files?
       // does it exist? if not create it. if it does, load it.
       //var now = DateTime.Today.ToShortDateString();

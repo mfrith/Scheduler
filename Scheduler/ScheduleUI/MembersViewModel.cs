@@ -16,9 +16,11 @@ namespace ScheduleUI
 {
   class MembersViewModel : PropertyChangedBase
   {
-    public MembersViewModel()
-    {
 
+    private string _home = string.Empty;
+    public MembersViewModel(string location)
+    {
+      _home = location;
     }
 
     // the only members list
@@ -121,10 +123,22 @@ namespace ScheduleUI
       //  var b = serializer.Deserialize<string>(reader);
       //}
 
-      string json = File.ReadAllText("C:\\Users\\mike\\Documents\\TI\\Data\\MembersStatus0 - Copy.json");
-      var ab = JsonConvert.DeserializeObject<dynamic>(json);
+      if (!Directory.Exists(_home + "\\Data"))
+        Directory.CreateDirectory(_home + "\\Data");
+
+      FileStream fs = null;
+      if (!File.Exists(_home + "\\Data\\MembersStatus0 - Copy.json"))
+      {
+        fs = File.Create(_home + "\\Data\\MembersStatus0 - Copy.json");
+        fs.Close();
+      }
+
+      string json = File.ReadAllText(_home + "\\Data\\MembersStatus0 - Copy.json");
       var memberlist = JsonConvert.DeserializeObject<List<MemberModel>>(json);
-      _members = new List<MemberModel>(memberlist);
+      if (memberlist == null)
+        _members = new List<MemberModel>();
+      else
+        _members = new List<MemberModel>(memberlist);
 
       //using (StreamReader strmreader = new StreamReader("c:\\users\\mike\\documents\\ti\\data\\MembersStatus.json"))
       //{

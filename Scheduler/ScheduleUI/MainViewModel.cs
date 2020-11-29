@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Data;
 
 namespace ScheduleUI
@@ -27,13 +29,15 @@ namespace ScheduleUI
     public MainViewModel()
     {
       _tabs = new ObservableCollection<object>();
-      GeneralViewModel generalVM = new GeneralViewModel();
-      MembersViewModel membersVM = new MembersViewModel();
+      string home = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+      GeneralViewModel generalVM = new GeneralViewModel(home);
+      MembersViewModel membersVM = new MembersViewModel(home);
       membersVM.Load();
-      MeetingsViewModel meetingsVM = new MeetingsViewModel(membersVM.Members);
+      MeetingsViewModel meetingsVM = new MeetingsViewModel(membersVM.Members, home);
       meetingsVM.Load();
       
-      ReportsViewModel reportsVM = new ReportsViewModel(meetingsVM.Meetings.ToList(), membersVM.Members);
+      ReportsViewModel reportsVM = new ReportsViewModel(meetingsVM.Meetings.ToList(), membersVM.Members, home);
       
       _tabs.Add(generalVM);
       _tabs.Add(membersVM);
@@ -61,17 +65,17 @@ namespace ScheduleUI
 
         //  }
         //}
-      }
 
-      DateTime lastMeeting = DateTime.ParseExact(meetings[0].DayOfMeeting, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
-      // need to find the meeting(s) to resolve
-      // DateTime lastMeetingResolved = meetings.w
-      bool resolved = "1" == meetings[0].Resolved;
-      if (!resolved)
-      {
-        // pop up view
-        //MeetingViewModel currentMeeting = new MeetingViewModel(meetings[0]);
-        meetings[0].Resolved = "1";
+        DateTime lastMeeting = DateTime.ParseExact(meetings[0].DayOfMeeting, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+        // need to find the meeting(s) to resolve
+        // DateTime lastMeetingResolved = meetings.w
+        bool resolved = "1" == meetings[0].Resolved;
+        if (!resolved)
+        {
+          // pop up view
+          //MeetingViewModel currentMeeting = new MeetingViewModel(meetings[0]);
+          meetings[0].Resolved = "1";
+        }
       }
       //load data files?
       // does it exist? if not create it. if it does, load it.
