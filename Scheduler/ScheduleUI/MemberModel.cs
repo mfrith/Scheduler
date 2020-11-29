@@ -10,7 +10,7 @@ namespace SchedulerUI
 {
   [Serializable]
 
-  public class MemberModel
+  public class MemberModel : IEquatable<MemberModel>, IComparable<MemberModel>
   {
   //  		"MemberID": 7831561 ,
 		//"Name": "Jenifer Velazco-Lopez",
@@ -223,6 +223,21 @@ namespace SchedulerUI
       }
       return strMember;
     }
+
+    public bool Equals(MemberModel other)
+    {
+      if (other == null) return false;
+      return (this.Name.Equals(other.Name));
+    }
+
+    public int CompareTo(MemberModel other)
+    {
+      if (other == null)
+        return 1;
+      else
+        return this.Name.CompareTo(other.Name);
+    }
+
     public MemberModel(string[] record)
     {
       MemberID = System.Int32.Parse(record[1]);

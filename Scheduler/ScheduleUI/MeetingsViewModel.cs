@@ -18,7 +18,6 @@ namespace ScheduleUI
   {
     private ObservableCollection<MeetingModelBase> _meetings;// = new ObservableCollection<MeetingModel>();
     private List<MemberModel> _members = new List<MemberModel>();
-    private List<MemberModel> _temporarymemberList;
 
     List<string> regularTemplate = new List<string>(new string[] {"Toastmaster","Speaker 1","Speaker 2","General Evaluator",
                                                                   "Evaluator 1", "Evaluator 2", "Table Topics", "Ah Counter",
@@ -220,7 +219,7 @@ namespace ScheduleUI
       _generateButtonEnabled = true;
       _roleListVisible = false;
       List<MemberModel> temp = _members.ToList();
-      _temporarymemberList = new List<MemberModel>(temp);
+      //_temporarymemberList = new List<MemberModel>(temp);
       NotifyPropertyChanged(() => RoleListVisible);
       NotifyPropertyChanged(() => GenerateButtonEnabled);
       NotifyPropertyChanged(() => ResetButtonEnabled);
@@ -244,25 +243,22 @@ namespace ScheduleUI
       //MeetingModelBase c = new MeetingModelBase(MeetingTemplate, MeetingDate);
       // need to create class depending on template specified
 
-      //if (MeetingTemplate == )
-      var t = _members.Where(it => it.IsCurrentMember == true);
-      //t = _members.Where(it => it.Name != "Lisa Winn");
-      List<MemberModel> temp = t.ToList();
-      _temporarymemberList = new List<MemberModel>(temp);
-      List<MeetingModelRegular> list = null;
+      var notCurrentMembers = new List<MemberModel>(_members.Where(it => it.IsCurrentMember == false));
+      // use the below for meeting generation
+      var temporarymemberList = new List<MemberModel>(_members.Where(it => it.IsCurrentMember == true));
+
+      List <MeetingModelRegular> list = null;
       if (GenerateForMonth)
       {
         // generate one meeting at a time and show on pane
         // write them out when okayed, then show the next one
-        _newMeeting = new MeetingModelRegularVM(_temporarymemberList);
+        _newMeeting = new MeetingModelRegularVM(temporarymemberList);
         _newMeeting.Month = MonthToGenerateFor;
         list = _newMeeting.GenerateForMonth(GenerateForFriday);
-        
-
       }
       else
       {
-        _newMeeting = new MeetingModelRegularVM(MeetingDate.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture), MeetingTemplate, _temporarymemberList);
+        _newMeeting = new MeetingModelRegularVM(MeetingDate.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture), MeetingTemplate, temporarymemberList);
         _newMeeting.Generate();
         CurrentMeeting = _newMeeting.ToList();
         _generateButtonEnabled = false;
@@ -271,11 +267,14 @@ namespace ScheduleUI
         NotifyPropertyChanged(() => GenerateButtonEnabled);
         NotifyPropertyChanged(() => ResetButtonEnabled);
       }
-      // _members.Sort();
+
+      _members = null;
+      _members = temporarymemberList.Concat(notCurrentMembers).ToList();
+      _members.Sort();
       IsoDateTimeConverter timeFormat = new IsoDateTimeConverter();
       timeFormat.DateTimeFormat = "yyyy-MM-dd";
       File.WriteAllText("C:\\Users\\mike\\Documents\\TI\\Data\\MembersStatus0.json", JsonConvert.SerializeObject(_members, timeFormat));
-      
+      File.WriteAllText("c:\\users\\mike\\documents\\ti\\data\\meetingsa.json", JsonConvert.SerializeObject(list, timeFormat));
       return;
     }
 
