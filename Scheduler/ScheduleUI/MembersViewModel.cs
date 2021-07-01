@@ -44,37 +44,43 @@ namespace ScheduleUI
     {
       Save();
     }
-    public bool CanEditMember
-    {
-      get { return string.IsNullOrEmpty(MemberToEdit) ? false : true; }
-    }
+    //public bool CanEditMember
+    //{
+    //  get { return string.IsNullOrEmpty(MemberToEdit) ? false : true; }
+    //}
 
    
-    public string MemberToEdit
-    {
-      get; set;
-    }
-    private ICommand _editMemberCommand;
-    public ICommand EditMemberCmd
-    {
-      get
-      {
-        return _editMemberCommand ?? (_editMemberCommand = new RelayCommand(() => EditMember(), () => CanEditMember));
-      }
-    }
+    //public MemberModel MemberToEdit
+    //{
+    //  get
+    //  { return _currentMemberVM; }
+    //  set
+    //  {
+        
+    //            _currentMemberVM = value;
+    //  }
+    //}
+    //private ICommand _editMemberCommand;
+    //public ICommand EditMemberCmd
+    //{
+    //  get
+    //  {
+    //    return _editMemberCommand ?? (_editMemberCommand = new RelayCommand(() => EditMember(), () => CanEditMember));
+    //  }
+    //}
 
-    private MemberInfoViewModel _currentMemberVM = null;
-    public void EditMember()
-    {
-      // show properties we want to show
-      string t = MemberToEdit;
-      _currentMemberEdit = _members.Where(it => it.Name == t).First();
-      NotifyPropertyChanged(() => MemberSet);
+    //private MemberInfoViewModel _currentMemberVM = null;
+    //public void EditMember()
+    //{
+    //  // show properties we want to show
+    //  string t = MemberToEdit;
+    //  _currentMemberEdit = _members.Where(it => it.Name == t).First();
+    //  NotifyPropertyChanged(() => MemberSet);
 
-      _currentMemberVM = new MemberInfoViewModel(_currentMemberEdit);
+    //  _currentMemberVM = new MemberInfoViewModel(_currentMemberEdit);
 
-      NotifyPropertyChanged(() => CurrentMemberEdit);
-    }
+    //  NotifyPropertyChanged(() => CurrentMemberEdit);
+    //}
 
     private readonly List<string> _meetingRoles = new List<string>(new string[] {"Toastmaster","Speaker","General Evaluator",
                                                                   "Evaluator", "Table Topics", "Ah Counter",
@@ -92,12 +98,13 @@ namespace ScheduleUI
         //NotifyPropertyChanged(() => ShowMemberRoles);
       }
     }
+
    // public 
-    public MemberInfoViewModel CurrentMemberEdit
-    {
-      get { return _currentMemberVM; }
-      //set { }
-    }
+    //public MemberInfoViewModel CurrentMemberEdit
+    //{
+    //  get { return _currentMemberVM; }
+    //  //set { }
+    //}
     private MemberModel _currentMemberEdit;
 
     public bool MemberSet
@@ -121,19 +128,19 @@ namespace ScheduleUI
       //  MemberModel themember = new MemberModel();
 
       //  var b = serializer.Deserialize<string>(reader);
-      //}
+      //}b
 
       if (!Directory.Exists(_home + "\\Data"))
         Directory.CreateDirectory(_home + "\\Data");
 
-      FileStream fs = null;
-      if (!File.Exists(_home + "\\Data\\MembersStatus0 - Copy.json"))
+      if (!File.Exists(_home + "\\Data\\MembersStatus.json"))
       {
-        fs = File.Create(_home + "\\Data\\MembersStatus0 - Copy.json");
+        FileStream fs;
+        fs = File.Create(_home + "\\Data\\MembersStatusjson");
         fs.Close();
       }
 
-      string json = File.ReadAllText(_home + "\\Data\\MembersStatus0 - Copy.json");
+      string json = File.ReadAllText(_home + "\\Data\\MembersStatus.json");
       var memberlist = JsonConvert.DeserializeObject<List<MemberModel>>(json);
       if (memberlist == null)
         _members = new List<MemberModel>();
@@ -183,23 +190,27 @@ namespace ScheduleUI
 
     private void Save()
     {
-      if (File.Exists("C:\\Users\\mike\\Documents\\TI\\MembersStatus.json"))
-      {
-        //File.Delete("C:\\Users\\mike\\Documents\\TI\\MembersStatus.json");
+      //if (File.Exists(_home + "\\Data\\MembersStatus.json"))
+      //{
+      //  //File.Delete("C:\\Users\\mike\\Documents\\TI\\MembersStatus.json");
         
-      }
-      using (StreamWriter strmWriter = new StreamWriter("C:\\Users\\mike\\Documents\\TI\\MembersStatus.json"))
-      {
-        // write out all objects(members)
-        string member = string.Empty;
-        List<MemberModel> SortedList = _members.OrderBy(o => o.Name).ToList();
+      //}
+      //using (StreamWriter strmWriter = new StreamWriter(_home + "\\Data\\MembersStatus.json"))
+      //{
+      //  // write out all objects(members)
+      //  string member = string.Empty;
+      //  List<MemberModel> SortedList = _members.OrderBy(o => o.Name).ToList();
 
-        foreach (var m in SortedList)
-        {
-          member = m.Serialize(m);
-          strmWriter.WriteLine(member);
-        }
-      }
+      //  foreach (var m in SortedList)
+      //  {
+      //    member = m.Serialize(m);
+      //    strmWriter.WriteLine(member);
+      //  }
+      //}
+
+      IsoDateTimeConverter timeFormat = new IsoDateTimeConverter();
+      timeFormat.DateTimeFormat = "yyyy-MM-dd";
+      File.WriteAllText(_home + "\\Data\\MembersStatus.json", JsonConvert.SerializeObject(_members, timeFormat));
 
     }
   }

@@ -7,6 +7,7 @@
         xmlns:self="clr"
         xmlns:local="clr-namespace:ScheduleUI"
         mc:Ignorable="d"
+        Loaded="Window_Loaded"
         Title="Club Scheduler" Height="450" Width="800">
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="Bool2Vis" />
@@ -85,92 +86,119 @@
 
       </TabItem>
       <TabItem Name="Members" Header="Members" DataContext="{Binding Tabs[1]}">
-        <!--members vm-->
+        <StackPanel>
+          <TextBlock Text="Member Information" Margin="10,10,10,10"/>
+          <DockPanel HorizontalAlignment="Left" LastChildFill="False">
+            <ComboBox Margin="10" Width="150" Height="25" HorizontalAlignment="Left" 
+                    ItemsSource="{Binding Members}" DisplayMemberPath="Name" 
+                      SelectedValue="{Binding SetMemberRoleStatus}"/>
+         
+            <Button Margin="10" Width="100" Height="25" HorizontalAlignment="Left" Content="New Member" 
+                    Command="{Binding NewMemberCmd}"/>
+            <Button Margin="10" Width="100" Height="25" Content="Save" Command="{Binding SaveMembersCmd}"/>
+          </DockPanel>
+          <!--members vm-->
         <TabControl>
           <TabItem  Header="General" Padding="5">
             <StackPanel>
-              <TextBlock Margin="10" FontSize="14">Member Information</TextBlock>
-              <DockPanel HorizontalAlignment="Left" LastChildFill="False">
-                <Button Margin="10" Width="100" Height="25" HorizontalAlignment="Left" Content="New Member" 
-                    Command="{Binding NewMemberCmd}"/>
-                <Button Margin="10" Width="100" Height="25" Content="Save" Command="{Binding SaveMembersCmd}"/>
-              </DockPanel>
-              <DockPanel HorizontalAlignment="Left" LastChildFill="False">
-                <ComboBox Margin="10" Width="150" Height="25" HorizontalAlignment="Left" 
-                    ItemsSource="{Binding Members}" DisplayMemberPath="Name" SelectedValuePath="Name"
-                      SelectedValue="{Binding MemberToEdit}"/>
 
-                <Button Margin="10" Width="100" Height="25" HorizontalAlignment="Left" Command="{Binding EditMemberCmd}">Edit Member</Button>
+              <DockPanel HorizontalAlignment="Left" LastChildFill="False">
+                <!--<ComboBox Margin="10" Width="150" Height="25" HorizontalAlignment="Left" 
+                    ItemsSource="{Binding Members}" DisplayMemberPath="Name" SelectedValuePath="Name"
+                      SelectedValue="{Binding MemberToEdit}"/>-->
+
+                <!--<Button Margin="10" Width="100" Height="25" HorizontalAlignment="Left" Command="{Binding EditMemberCmd}">Edit Member</Button>-->
               </DockPanel>
               <StackPanel Width="600" HorizontalAlignment="Left">
                 <DockPanel HorizontalAlignment="Center" Width="500">
-                  <StackPanel>
-                    <CheckBox Content="Is Current" IsChecked="{Binding CurrentMemberEdit.IsCurrent, Mode=TwoWay}"/>
-                    <CheckBox Content="Can be Toastmaster" IsChecked="{Binding CurrentMemberEdit.CanBeToastmaster, Mode=TwoWay}"/>
-                    <CheckBox Content="Can Be Evaluator" IsChecked="{Binding CurrentMemberEdit.CanBeEvaluator, Mode=TwoWay}"/>
-                  </StackPanel>
+                  <StackPanel Margin="10,10,0,0">
+                      <CheckBox Content="Is Current" IsChecked="{Binding SetMemberRoleStatus.IsCurrentMember, Mode=TwoWay}"/>
+                      <CheckBox Content="Can be Toastmaster" IsChecked="{Binding SetMemberRoleStatus.CanBeToastmaster, Mode=TwoWay}"/>
+                      <CheckBox Content="Can Be Evaluator" IsChecked="{Binding SetMemberRoleStatus.CanBeEvaluator, Mode=TwoWay}"/>
+                      <CheckBox Content="Has been an officer" IsChecked="{Binding SetMemberRoleStatus.HasBeenOfficer}"/>
+                    </StackPanel>
                   <StackPanel>
                     <TextBlock Text="Meetings Out" HorizontalAlignment="Center"/>
-                    <Calendar SelectionMode="MultipleRange" />
+                    <Calendar SelectionMode="MultipleRange" DisplayDateStart=""/>
 
                   </StackPanel>
                 </DockPanel>
               </StackPanel>
-            </StackPanel>
+
+              </StackPanel>
           </TabItem>
           <TabItem Header="Role History" Padding="5">
             <StackPanel Width="600" HorizontalAlignment="Left">
               <!--<DockPanel HorizontalAlignment="Left" LastChildFill="False">-->
-              <ComboBox Margin="10" Width="150" Height="25" HorizontalAlignment="Left" 
-                    ItemsSource="{Binding Members}" DisplayMemberPath="Name" 
-                      SelectedValue="{Binding SetMemberRoleStatus}"/>
+
               <!--<ListBox ItemsSource="{Binding Roles}" Width="80" ></ListBox>-->
-              <Grid>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="100"/>
-                  <ColumnDefinition Width="150"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-              </Grid>
+              <WrapPanel >
+                <TextBlock  Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Toastmaster"/>
+                <DatePicker  Text="{Binding SetMemberRoleStatus.Toastmaster}" Width="100" Margin="10,0,0,0"/>
+              </WrapPanel>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Toastmaster"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Member.Toastmaster}" Width="100" Margin="10,0,0,0"/>
+              <WrapPanel>
+                <TextBlock Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" Text="Speaker"/>
+                <DatePicker Text="{Binding SetMemberRoleStatus.Speaker}" Width="100" Margin="10,0,0,0"/>
+              </WrapPanel>
 
+              <WrapPanel >
+                <TextBlock  Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Evaluator"/>
+                <DatePicker  Text="{Binding SetMemberRoleStatus.Evaluator}" Width="100" Margin="10,0,0,0"/>
+              </WrapPanel>
 
-              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Speaker"/>
-              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Evaluator"/>
-              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="General Evaluator"/>
-              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Table Topics"/>
-              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Ah Counter"/>
-              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Timer"/>
-              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Grammarian"/>
-              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Quiz Master"/>
-              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Video"/>
-              <TextBlock Width="100" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Hot Seat"/>
+              <WrapPanel>
+                <TextBlock Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" Text="General Evaluator"/>
+                <DatePicker Text="{Binding SetMemberRoleStatus.GeneralEvaluator}" Width="100" Margin="10,0,0,0"/>
+              </WrapPanel>
 
-              <!--new string[] {"Toastmaster","Speaker","General Evaluator",
-                                                                  "Evaluator", "Table Topics", "Ah Counter",
-                                                                  "Timer", "Grammarian", "Quiz Master", "Video", "Hot Seat" });-->
-              <!--<Button Margin="10" Width="100" Height="25" HorizontalAlignment="Left" Command="{Binding EditMemberCmd}">Edit Member</Button>-->
-              <!--</DockPanel>-->
+              <WrapPanel >
+                <TextBlock  Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Table Topics"/>
+                <DatePicker  Text="{Binding SetMemberRoleStatus.TT}" Width="100" Margin="10,0,0,0"/>
+              </WrapPanel>
+
+              <WrapPanel>
+                <TextBlock Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" Text="Ah Counter"/>
+                <DatePicker Text="{Binding SetMemberRoleStatus.Ah}" Width="100" Margin="10,0,0,0"/>
+              </WrapPanel>
+
+              <WrapPanel >
+                <TextBlock  Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Timer"/>
+                <DatePicker  Text="{Binding SetMemberRoleStatus.Timer}" Width="100" Margin="10,0,0,0"/>
+              </WrapPanel>
+
+              <WrapPanel>
+                <TextBlock Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" Text="Grammarian"/>
+                <DatePicker Text="{Binding SetMemberRoleStatus.Gram}" Width="100" Margin="10,0,0,0"/>
+              </WrapPanel>
+
+              <WrapPanel>
+                <TextBlock Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" Text="Quiz Master"/>
+                <DatePicker Text="{Binding SetMemberRoleStatus.Quiz}" Width="100" Margin="10,0,0,0"/>
+              </WrapPanel>
+
+              <WrapPanel >
+                <TextBlock  Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Video"/>
+                <DatePicker  Text="{Binding SetMemberRoleStatus.Video}" Width="100" Margin="10,0,0,0"/>
+              </WrapPanel>
+
+              <WrapPanel>
+                <TextBlock Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" Text="Hot Seat"/>
+                <DatePicker Text="{Binding SetMemberRoleStatus.HotSeat}" Width="100" Margin="10,0,0,0"/>
+              </WrapPanel>
+
+              <!--<Button Width="50" Margin="20,10,0,0" HorizontalAlignment="Left" Content="Save"/>-->
             </StackPanel>
           </TabItem>
           <TabItem Header="Speech History" Padding="7">
 
           </TabItem>
 
-        </TabControl>
+            <TabItem Header="Members" Padding="7">
+              
+            </TabItem>
+          </TabControl>
+        </StackPanel>
       </TabItem>
       <!--<TabItem Name="Members" Header="Members">
         <FlowDocumentScrollViewer>

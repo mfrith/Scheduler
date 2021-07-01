@@ -51,7 +51,7 @@ namespace ScheduleUI
         new KeyValuePair<string, string>("speakathonTemplate", "Speakathon")
     };
     private string _template = string.Empty;
-    private MeetingModelBase meetingModel;
+    private MeetingModelRegular meetingModel;
     //private DateTime DayOfMeeting { get; set; }
     //private MemberModel Toastmaster { get; set; }
     //private MemberModel Speaker1 { get; set; }
@@ -98,14 +98,18 @@ namespace ScheduleUI
     public string TableTopics { get; set; }
 
     public string Month { get; set; }
+    public string Year { get; set; }
     public MeetingModelRegularVM()
     { }
 
-    public MeetingModelRegularVM(List<MemberModel> members)
+    private string _home;
+
+    public MeetingModelRegularVM(List<MemberModel> members, string home)
     {
+      _home = home;
       _members = members;
     }
-    public MeetingModelRegularVM(MeetingModelBase meetingModel)
+    public MeetingModelRegularVM(MeetingModelRegular meetingModel)
     {
       this.meetingModel = meetingModel;
     }
@@ -121,18 +125,25 @@ namespace ScheduleUI
 
     public List<MeetingModelRegular> GenerateForMonth(bool generateForFriday)
     {
-
+       
       List<MeetingModelRegular> list = GetRolesPerMonth(Month, generateForFriday);
+      string fileName = _home + "\\Agendas\\MeetingsPerMonth" + Month + Year + ".csv";
+      if (File.Exists(fileName))
+      {
+        File.Delete(fileName);
+      }
 
-      using (StreamWriter file = new StreamWriter("C:\\Users\\mike\\Documents\\TI\\MeetingsPerMonthNext.csv"))
+      using (StreamWriter file = new StreamWriter(fileName))
       {
         foreach (var role in regularTemplateOutput)
         {
           string row;
           if (list.Count() == 5)
             row = role + "," + GetListValue(list[0], role) + "," + GetListValue(list[1], role) + "," + GetListValue(list[2], role) + "," + GetListValue(list[3], role) + "," + GetListValue(list[4], role);
-          else
+          else if (list.Count() == 4)
             row = role + "," + GetListValue(list[0], role) + "," + GetListValue(list[1], role) + "," + GetListValue(list[2], role) + "," + GetListValue(list[3], role);
+          else
+            row = role + "," + GetListValue(list[0], role) + "," + GetListValue(list[1], role) + "," + GetListValue(list[2], role);
           file.WriteLine(row);
         }
 
@@ -373,7 +384,12 @@ namespace ScheduleUI
     {
       List<DateTime> theMeetings = new List<DateTime>();
       DateTime now = DateTime.Now;
-      int year = now.Year;
+      int yearAdjustment = 0;
+      if (now.Month == 12)
+        yearAdjustment = 1;
+
+      int year = now.Year + yearAdjustment;
+      Year = year.ToString();
       DateTime dt = DateTime.Parse(month + ", " + year.ToString());
       // find the first wednesday of the month
       DayOfWeek day = dt.DayOfWeek;
@@ -395,7 +411,7 @@ namespace ScheduleUI
       DateTime fourthWednesday = startDate.AddDays(21);
       DateTime fifthWednesday = startDate.AddDays(28);
       var daysinmonth = DateTime.DaysInMonth(startDate.Year, startDate.Month);
-      DateTime lastDayOfMonth = new DateTime(2020, startDate.Month, daysinmonth);
+      DateTime lastDayOfMonth = new DateTime(startDate.Year, startDate.Month, daysinmonth);
 
       DateTime g = lastDayOfMonth;
       while (g.DayOfWeek != DayOfWeek.Friday)
@@ -422,6 +438,13 @@ namespace ScheduleUI
         return meetings;
       }
 
+      if (month == 7) //UC - need a date flag for UC and for other events?
+      {
+        meetings.Add(firstWednesday);
+        meetings.Add(thirdWednesday);
+        meetings.Add(fourthWednesday);
+        return meetings;
+      }
       meetings.Add(firstWednesday);
       meetings.Add(secondWednesday);
       meetings.Add(thirdWednesday);
@@ -518,8 +541,15 @@ namespace ScheduleUI
         if (members.Count == 0)
           members = new List<MemberModel>(_members);
 
-        evaluator = members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
-        m.Evaluator2 = evaluator.Name;
+        evaluator = members.Where(a => a.CanBeEvaluator == true)?.OrderBy(a => a.Evaluator)?.FirstOrDefault();
+        if (evaluator == null)
+        {
+          members = new List<MemberModel>(_members);
+          evaluator = members.Where(a => a.CanBeEvaluator == true)?.OrderBy(a => a.Evaluator).First();
+          m.Evaluator2 = evaluator.Name;
+        }
+        else
+          m.Evaluator2 = evaluator.Name;
 
         //enames.Add(evaluator.Name);
         members.Remove(evaluator);
@@ -582,6 +612,9 @@ namespace ScheduleUI
 
         //ahnames.Add(ah.Name);
         members.Remove(ah);
+        if (members.Count == 0)
+          members = new List<MemberModel>(_members);
+
         ah.Ah = meetingDates[i];
         m.AhCounter = ah.Name;
         var quiz = members.OrderBy(a => a.Quiz).First();

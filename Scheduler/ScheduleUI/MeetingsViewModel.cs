@@ -16,7 +16,7 @@ namespace ScheduleUI
 {
   public class MeetingsViewModel : PropertyChangedBase
   {
-    private ObservableCollection<MeetingModelBase> _meetings;// = new ObservableCollection<MeetingModel>();
+    private ObservableCollection<MeetingModelRegular> _meetings;// = new ObservableCollection<MeetingModel>();
     private List<MemberModel> _members = new List<MemberModel>();
 
     List<string> regularTemplate = new List<string>(new string[] {"Toastmaster","Speaker 1","Speaker 2","General Evaluator",
@@ -137,7 +137,7 @@ namespace ScheduleUI
     //    { return; }
     //    this.canExecute = value;
     //  }
-    //}
+    //}MM
 
     //private ICommand _generateMeeting;
     //public ICommand GenerateMeetingCmd
@@ -246,14 +246,16 @@ namespace ScheduleUI
       var notCurrentMembers = new List<MemberModel>(_members.Where(it => it.IsCurrentMember == false));
       // use the below for meeting generation
       var temporarymemberList = new List<MemberModel>(_members.Where(it => it.IsCurrentMember == true));
+      List<string> membs = temporarymemberList.Select(it => it.Name).ToList();
 
       List <MeetingModelRegular> list = null;
       if (GenerateForMonth)
       {
         // generate one meeting at a time and show on pane
         // write them out when okayed, then show the next one
-        _newMeeting = new MeetingModelRegularVM(temporarymemberList);
+        _newMeeting = new MeetingModelRegularVM(temporarymemberList, _home);
         _newMeeting.Month = MonthToGenerateFor;
+
         list = _newMeeting.GenerateForMonth(GenerateForFriday);
       }
       else
@@ -273,8 +275,19 @@ namespace ScheduleUI
       _members.Sort();
       IsoDateTimeConverter timeFormat = new IsoDateTimeConverter();
       timeFormat.DateTimeFormat = "yyyy-MM-dd";
-      File.WriteAllText("C:\\Users\\mike\\Documents\\TI\\Data\\MembersStatus0.json", JsonConvert.SerializeObject(_members, timeFormat));
-      File.WriteAllText("c:\\users\\mike\\documents\\ti\\data\\meetingsa.json", JsonConvert.SerializeObject(list, timeFormat));
+      File.WriteAllText(_home + "\\Data\\MembersStatus.json", JsonConvert.SerializeObject(_members, timeFormat));
+      string fileName = _home + "\\Data\\Meetings" + MonthToGenerateFor + DateTime.Now.Year.ToString() + ".json";
+      if (!File.Exists(fileName))
+      {
+        FileStream fs;
+        fs = File.Create(fileName);
+        fs.Close();
+      }
+      // following is for dev purposes only
+      //int vers = 1;
+      //string meetingFile = _home + "\\Data\\meetings.json";
+      //if (File.Exists (_home + ))
+      File.WriteAllText(fileName, JsonConvert.SerializeObject(list, timeFormat));
       return;
     }
 
@@ -291,7 +304,7 @@ namespace ScheduleUI
       get { return _showMeeting; }
       set { _showMeeting = value; }
     }
-    public ObservableCollection<MeetingModelBase> Meetings
+    public ObservableCollection<MeetingModelRegular> Meetings
     {
       get { return _meetings; }
     }
@@ -318,29 +331,39 @@ namespace ScheduleUI
       //}
 
       List<MeetingModelBase> theList = new List<MeetingModelBase>();
-
+      
       // next 3 lines for reading and writing
       // if no list create one?
       if (!Directory.Exists(_home + "\\Data"))
         Directory.CreateDirectory(_home + "\\Data");
 
       FileStream fs = null;
-      if (!File.Exists(_home + "\\Data\\meetings5.json"))
+      if (!File.Exists(_home + "\\Data\\meetings.json"))
       {
-        fs = File.Create(_home + "\\Data\\meetings5.json");
+        fs = File.Create(_home + "\\Data\\meetings.json");
         fs.Close();
       }
 
+      //string json = File.ReadAllText(_home + "\\Data\\meetings.json");
+      //var meetingList = JsonConvert.DeserializeObject<List<MeetingModelRegular>>(json);
+      //if (meetingList == null)
+      //  _meetings = new ObservableCollection<MeetingModelRegular>();
+      //else
+      //  _meetings = new ObservableCollection<MeetingModelRegular>(meetingList);
+
+
       string json = File.ReadAllText(_home + "\\Data\\meetings5.json");
-      var meetingList = JsonConvert.DeserializeObject<List<MeetingModelBase>>(json);
-      if (meetingList == null)
-        _meetings = new ObservableCollection<MeetingModelBase>();
-      else
-        _meetings = new ObservableCollection<MeetingModelBase>(meetingList);
+      var meetingList = JsonConvert.DeserializeObject<List<MeetingModelRegular>>(json);
+      _meetings = new ObservableCollection<MeetingModelRegular>(meetingList);
 
+      IsoDateTimeConverter timeFormat = new IsoDateTimeConverter();
+      timeFormat.DateTimeFormat = "yyyy-MM-dd";
 
-      //string json = File.ReadAllText("C:\\Users\\mike\\Documents\\TI\\Data\\Meetings5.json");
-      //_meetings = new ObservableCollection<MeetingModelBase>(meetingList);
+      // following is for dev purposes only
+      //int vers = 1;
+      //string meetingFile = _home + "\\Data\\meetings.json";
+      //if (File.Exists (_home + ))
+      File.WriteAllText(_home + "\\Data\\meetings5.json", JsonConvert.SerializeObject(meetingList, timeFormat));
 
       //File.WriteAllText("myobjects.json", JsonConvert.SerializeObject(playerList));
 
@@ -406,7 +429,7 @@ namespace ScheduleUI
 
     }
 
-    private void WriteMeetingToFile(string path, MeetingModelBase meeting)
+    private void WriteMeetingToFile(string path, MeetingModelRegular meeting)
     {
       System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
       using (FileStream stream = new FileStream(path, FileMode.Append, FileAccess.Write))
@@ -432,15 +455,15 @@ namespace ScheduleUI
         }
 
         //var thefile = strmReader.ReadToEnd();
-        var t = new List<MeetingModelBase>();
-        
-          MeetingModelBase bah = new MeetingModelBase();
+        var t = new List<MeetingModelRegular>();
+
+        MeetingModelRegular bah = new MeetingModelRegular();
           var a = bah.Deserialize(meeting);
           t.Add(a);
        
 
         t.Reverse();
-        _meetings = new ObservableCollection<MeetingModelBase>(t);
+        _meetings = new ObservableCollection<MeetingModelRegular>(t);
 
       }
     }

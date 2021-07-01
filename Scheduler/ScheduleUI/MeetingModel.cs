@@ -33,7 +33,10 @@ namespace SchedulerUI
     public List<string> Attendees { get; set; }
 
     public string Resolved { get; set; }
+    
+    public string WOTD { get; set; }
 
+    public string Theme { get; set; }
     public MeetingModelBase()
     {
 
@@ -44,7 +47,7 @@ namespace SchedulerUI
     }
 
 
-    public MeetingModelBase Deserialize(string json)
+    public MeetingModelRegular Deserialize(string json)
     {
       var options = new JsonSerializerOptions
       {
@@ -54,7 +57,7 @@ namespace SchedulerUI
       byte[] data = Encoding.UTF8.GetBytes(json);
       Utf8JsonReader reader = new Utf8JsonReader(data, isFinalBlock: true, state: default);
       string propertyName = string.Empty;
-      MeetingModelBase f = null;
+      MeetingModelRegular f = null;
       //MeetingModelRegular steve = new MeetingModelRegular();
       reader.Read(); reader.Read();
       var name = reader.GetString();
@@ -63,10 +66,10 @@ namespace SchedulerUI
 
       if (meetingtype == "1")
         f = new MeetingModelRegular();
-      else if (meetingtype == "4")
-        f = new MeetingModel4Speaker();
-      else if (meetingtype == "30" || meetingtype == "20" || meetingtype == "10")
-        f = new MeetingContest();
+      //else if (meetingtype == "4")
+      //  f = new MeetingModel4Speaker();
+      //else if (meetingtype == "30" || meetingtype == "20" || meetingtype == "10")
+      //  f = new MeetingContest();
 
       while (reader.Read())
       {
@@ -135,6 +138,12 @@ namespace SchedulerUI
 
               if (propertyName == "Resolved")
                 f.Resolved = value;
+
+              if (propertyName == "WOTD")
+                f.WOTD = value;
+
+              if (propertyName == "Theme")
+                f.Theme = value;
               break;
 
             }
@@ -146,7 +155,7 @@ namespace SchedulerUI
       //return JsonSerializer.Parse<MeetingModelRegular>(json, options);
 
     }
-    public string Serialize(MeetingModelBase meeting)
+    public string Serialize(MeetingModelRegular meeting)
     {
 
       string theMeeting = string.Empty;
@@ -165,8 +174,31 @@ namespace SchedulerUI
   }
 
   [Serializable]
-  public class MeetingModelRegular : MeetingModelBase
+  public class MeetingModelRegular
   {
+    public string MeetingType { get; set; }
+    public string ID { get; set; }
+    public string DayOfMeeting { get; set; }
+    public string Toastmaster { get; set; }
+    public string Speaker1 { get; set; }
+    public string Speaker2 { get; set; }
+    public string GeneralEvaluator { get; set; }
+    public string Evaluator1 { get; set; }
+    public string Evaluator2 { get; set; }
+
+    public string AhCounter { get; set; }
+    public string Grammarian { get; set; }
+    public string Timer { get; set; }
+    public string QuizMaster { get; set; }
+    public string Video { get; set; }
+    public string HotSeat { get; set; }
+    public List<string> Attendees { get; set; }
+
+    public string Resolved { get; set; }
+
+    public string WOTD { get; set; }
+
+    public string Theme { get; set; }
     public string TableTopics { get; set; }
     public string TTWinner { get; set; }
     public List<string> TTContestants { get; set; }
@@ -241,9 +273,9 @@ namespace SchedulerUI
     //          break;
 
     //        }
-          
+
     //    }
-          
+
     //  }
     //  return steve;
     //  //return JsonSerializer.Parse<MeetingModelRegular>(json, options);
@@ -287,6 +319,120 @@ namespace SchedulerUI
 
     // // return JsonSerializer.ToString<MeetingModelRegular>(value, options);
     //}
+    public string Serialize(MeetingModelRegular meeting)
+    {
+
+      string theMeeting = string.Empty;
+      return theMeeting;
+    }
+    public MeetingModelRegular Deserialize(string json)
+    {
+      var options = new JsonSerializerOptions
+      {
+        AllowTrailingCommas = true
+      };
+
+      byte[] data = Encoding.UTF8.GetBytes(json);
+      Utf8JsonReader reader = new Utf8JsonReader(data, isFinalBlock: true, state: default);
+      string propertyName = string.Empty;
+      MeetingModelRegular f = null;
+      //MeetingModelRegular steve = new MeetingModelRegular();
+      reader.Read(); reader.Read();
+      var name = reader.GetString();
+      reader.Read();
+      var meetingtype = reader.GetString();
+
+      if (meetingtype == "1")
+        f = new MeetingModelRegular();
+      //else if (meetingtype == "4")
+      //  f = new MeetingModel4Speaker();
+      //else if (meetingtype == "30" || meetingtype == "20" || meetingtype == "10")
+      //  f = new MeetingContest();
+
+      while (reader.Read())
+      {
+
+        switch (reader.TokenType)
+        {
+          case JsonTokenType.PropertyName:
+            {
+              propertyName = reader.GetString();
+              break;
+            }
+          case JsonTokenType.String:
+            {
+              string value = reader.GetString();
+
+              if (propertyName == "ID")
+                f.ID = value;
+
+              if (propertyName == "DayOfMeeting")
+                f.DayOfMeeting = value;
+
+              if (propertyName == "Toastmaster")
+                f.Toastmaster = value;
+
+              if (propertyName == "Speaker1")
+                f.Speaker1 = value;
+
+              if (propertyName == "Speaker2")
+                f.Speaker2 = value;
+
+              if (propertyName == "GeneralEvaluator")
+                f.GeneralEvaluator = value;
+
+              if (propertyName == "Evaluator1")
+                f.Evaluator1 = value;
+
+              if (propertyName == "Evaluator2")
+                f.Evaluator2 = value;
+
+              if (propertyName == "TableTopics")
+                (f as MeetingModelRegular).TableTopics = value;
+
+              if (propertyName == "AhCounter")
+                f.AhCounter = value;
+
+              if (propertyName == "Grammarian")
+                f.Grammarian = value;
+
+              if (propertyName == "Timer")
+                f.Timer = value;
+
+              if (propertyName == "QuizMaster")
+                f.QuizMaster = value;
+
+              if (propertyName == "Video")
+                f.Video = value;
+
+              if (propertyName == "HotSeat")
+                f.HotSeat = value;
+
+              if (propertyName == "Attendees")
+              {
+                f.Attendees = value.Split(',').ToList();
+
+              }
+
+              if (propertyName == "Resolved")
+                f.Resolved = value;
+
+              if (propertyName == "WOTD")
+                f.WOTD = value;
+
+              if (propertyName == "Theme")
+                f.Theme = value;
+              break;
+
+            }
+
+        }
+
+      }
+      return f;
+      //return JsonSerializer.Parse<MeetingModelRegular>(json, options);
+
+    }
   }
 
   public class MeetingModel3Speaker : MeetingModelBase
