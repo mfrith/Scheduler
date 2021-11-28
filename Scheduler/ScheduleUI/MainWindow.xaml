@@ -116,6 +116,7 @@
                       <CheckBox Content="Can be Toastmaster" IsChecked="{Binding SetMemberRoleStatus.CanBeToastmaster, Mode=TwoWay}"/>
                       <CheckBox Content="Can Be Evaluator" IsChecked="{Binding SetMemberRoleStatus.CanBeEvaluator, Mode=TwoWay}"/>
                       <CheckBox Content="Has been an officer" IsChecked="{Binding SetMemberRoleStatus.HasBeenOfficer}"/>
+                      <!--<CheckBox Content="Active" IsChecked="{Binding SetMemberRoleStatus.IsActive}"/>-->
                     </StackPanel>
                   <StackPanel>
                     <TextBlock Text="Meetings Out" HorizontalAlignment="Center"/>
@@ -134,57 +135,57 @@
               <!--<ListBox ItemsSource="{Binding Roles}" Width="80" ></ListBox>-->
               <WrapPanel >
                 <TextBlock  Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Toastmaster"/>
-                <DatePicker  Text="{Binding SetMemberRoleStatus.Toastmaster}" Width="100" Margin="10,0,0,0"/>
+                <DatePicker   SelectedDate="{Binding SetMemberRoleStatus.Toastmaster}" Width="100" Margin="10,0,0,0"/>
               </WrapPanel>
 
               <WrapPanel>
                 <TextBlock Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" Text="Speaker"/>
-                <DatePicker Text="{Binding SetMemberRoleStatus.Speaker}" Width="100" Margin="10,0,0,0"/>
+                  <DatePicker SelectedDate="{Binding SetMemberRoleStatus.Speaker}" Width="100" Margin="10,0,0,0"/>
               </WrapPanel>
 
               <WrapPanel >
                 <TextBlock  Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Evaluator"/>
-                <DatePicker  Text="{Binding SetMemberRoleStatus.Evaluator}" Width="100" Margin="10,0,0,0"/>
+                  <DatePicker  SelectedDate="{Binding SetMemberRoleStatus.Evaluator}" Width="100" Margin="10,0,0,0"/>
               </WrapPanel>
 
               <WrapPanel>
                 <TextBlock Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" Text="General Evaluator"/>
-                <DatePicker Text="{Binding SetMemberRoleStatus.GeneralEvaluator}" Width="100" Margin="10,0,0,0"/>
+                  <DatePicker SelectedDate="{Binding SetMemberRoleStatus.GeneralEvaluator}" Width="100" Margin="10,0,0,0"/>
               </WrapPanel>
 
               <WrapPanel >
                 <TextBlock  Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Table Topics"/>
-                <DatePicker  Text="{Binding SetMemberRoleStatus.TT}" Width="100" Margin="10,0,0,0"/>
+                  <DatePicker  SelectedDate="{Binding SetMemberRoleStatus.TT}" Width="100" Margin="10,0,0,0"/>
               </WrapPanel>
 
               <WrapPanel>
                 <TextBlock Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" Text="Ah Counter"/>
-                <DatePicker Text="{Binding SetMemberRoleStatus.Ah}" Width="100" Margin="10,0,0,0"/>
+                  <DatePicker SelectedDate="{Binding SetMemberRoleStatus.Ah}" Width="100" Margin="10,0,0,0"/>
               </WrapPanel>
 
               <WrapPanel >
                 <TextBlock  Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Timer"/>
-                <DatePicker  Text="{Binding SetMemberRoleStatus.Timer}" Width="100" Margin="10,0,0,0"/>
+                  <DatePicker  SelectedDate="{Binding SetMemberRoleStatus.Timer}" Width="100" Margin="10,0,0,0"/>
               </WrapPanel>
 
               <WrapPanel>
                 <TextBlock Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" Text="Grammarian"/>
-                <DatePicker Text="{Binding SetMemberRoleStatus.Gram}" Width="100" Margin="10,0,0,0"/>
+                  <DatePicker SelectedDate="{Binding SetMemberRoleStatus.Gram}" Width="100" Margin="10,0,0,0"/>
               </WrapPanel>
 
               <WrapPanel>
                 <TextBlock Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" Text="Quiz Master"/>
-                <DatePicker Text="{Binding SetMemberRoleStatus.Quiz}" Width="100" Margin="10,0,0,0"/>
+                  <DatePicker SelectedDate="{Binding SetMemberRoleStatus.Quiz}" Width="100" Margin="10,0,0,0"/>
               </WrapPanel>
 
               <WrapPanel >
                 <TextBlock  Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0" Text="Video"/>
-                <DatePicker  Text="{Binding SetMemberRoleStatus.Video}" Width="100" Margin="10,0,0,0"/>
+                  <DatePicker  SelectedDate="{Binding SetMemberRoleStatus.Video}" Width="100" Margin="10,0,0,0"/>
               </WrapPanel>
 
               <WrapPanel>
                 <TextBlock Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" Text="Hot Seat"/>
-                <DatePicker Text="{Binding SetMemberRoleStatus.HotSeat}" Width="100" Margin="10,0,0,0"/>
+                  <DatePicker SelectedDate="{Binding SetMemberRoleStatus.HotSeat}" Width="100" Margin="10,0,0,0"/>
               </WrapPanel>
 
               <!--<Button Width="50" Margin="20,10,0,0" HorizontalAlignment="Left" Content="Save"/>-->
@@ -246,7 +247,7 @@
             <Button Name="clearBtn" Content="Clear" Command="{Binding ClearCmd}"
                     Margin="10" Width="70" Height="25" IsEnabled="{Binding ResetButtonEnabled}" />
             <Button Name="okBtn" Content="Save" Command="{Binding OKCmd}"
-                    Margin="10" Width="70" Height="25" IsEnabled="{Binding ResetButtonEnabled}" />
+                    Margin="10" Width="70" Height="25"  />
           </DockPanel>
           <DockPanel LastChildFill="False" HorizontalAlignment="Left">
             <ListBox Name="lstHeader" DockPanel.Dock="Left" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"

@@ -15,24 +15,13 @@ using System.Windows.Shapes;
 namespace ScheduleUI
 {
   /// <summary>
-  /// Interaction logic for MeetingResolutionView.xaml
+  /// Interaction logic for MeetingsResolutionView.xaml
   /// </summary>
-  public partial class MeetingResolutionView : UserControl
+  public partial class MeetingsResolutionView : Window
   {
-    public MeetingResolutionView()
+    public MeetingsResolutionView()
     {
       InitializeComponent();
-    }
-
-    private void Button_Click(object sender, RoutedEventArgs e)
-    {
-      //DialogResult = true;
-      //this.Close();
-    }
-
-    private void Button_Click_1(object sender, RoutedEventArgs e)
-    {
-
     }
   }
 }

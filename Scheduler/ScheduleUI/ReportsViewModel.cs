@@ -9,17 +9,17 @@ namespace ScheduleUI
 {
   public class ReportsViewModel
   {
-    List<MeetingModelRegular> _meetings;
+    List<MeetingModelBase> _meetings;
     List<MemberModel> _members;
     private string _home = string.Empty;
-    public ReportsViewModel(List<MeetingModelRegular> meetings, List<MemberModel> members, string location)
+    public ReportsViewModel(List<MeetingModelBase> meetings, List<MemberModel> members, string location)
     {
       _home = location;
       _meetings = meetings;
       _members = members;
     }
 
-    public List<MeetingModelRegular> Meetings
+    public List<MeetingModelBase> Meetings
     {
       get { return _meetings; }
     }

@@ -1,16 +1,11 @@
-﻿using System;
+﻿using SchedulerUI;
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using Newtonsoft.Json;
-using SchedulerUI;
 
 namespace ScheduleUI
 {
@@ -114,6 +109,10 @@ namespace ScheduleUI
       this.meetingModel = meetingModel;
     }
 
+    public DateTime DateOfMeeting
+    {
+      get; set;
+    }
 
     public MeetingModelRegularVM(string meetingDate, string meetingTemplate, List<MemberModel> members)
     {
@@ -123,10 +122,20 @@ namespace ScheduleUI
       meetingModel = new MeetingModelRegular();
     }
 
-    public List<MeetingModelRegular> GenerateForMonth(bool generateForFriday)
+    public MeetingModelRegularVM(DateTime meetingDate, string meetingTemplate, List<MemberModel> members)
+    {
+      DateOfMeeting = meetingDate;
+      _template = meetingTemplate;
+      _members = members;
+      meetingModel = new MeetingModelRegular();
+    }
+
+    public List<MeetingModelRegular> GenerateForMonth(bool generateForFriday, int nextMeetingId)
     {
        
-      List<MeetingModelRegular> list = GetRolesPerMonth(Month, generateForFriday);
+      List<MeetingModelRegular> list = GetRolesPerMonth(Month, generateForFriday, nextMeetingId);
+
+      // show meetings in dialog for review;
       string fileName = _home + "\\Agendas\\MeetingsPerMonth" + Month + Year + ".csv";
       if (File.Exists(fileName))
       {
@@ -158,46 +167,59 @@ namespace ScheduleUI
     }
     public void Generate()
     {
+
       //List<MemberModel> members = new List<MemberModel>(_members);
       // need flag for monthly grouping
       // base selection for the month, default setting
-      //if (bMonthly)
-      //{
 
-      //}
-      //var speaker1 = _members.OrderBy(a => a.Speaker).First();
-      //_members.Remove(speaker1);
-      //var speaker2 = _members.OrderBy(a => a.Speaker).First();
-      //_members.Remove(speaker2);
-      //var evaluator1 = _members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
-      //_members.Remove(evaluator1);
-      //var evaluator2 = _members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
-      //_members.Remove(evaluator2);
-      //var toastmaster = _members.Where(a => a.CanBeToastmaster == true).OrderBy(a => a.Toastmaster).First();
-      //_members.Remove(toastmaster);
-      //var generalEvaluator = _members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.GeneralEvaluator).First();
-      //_members.Remove(generalEvaluator);
-      //var tt = _members.OrderBy(a => a.TT).First();
-      //_members.Remove(tt);
-      //var hotSeat = _members.OrderBy(a => a.HotSeat).First();
-      //_members.Remove(hotSeat);
-      //var gram = _members.OrderBy(a => a.Gram).First();
-      //_members.Remove(gram);
-      //var ah = _members.OrderBy(a => a.Ah).First();
-      //_members.Remove(ah);
-      //var quiz = _members.OrderBy(a => a.Quiz).First();
-      //_members.Remove(quiz);
-      //var timer = _members.OrderBy(a => a.Timer).First();
-      //_members.Remove(timer);
-      //var video = _members.OrderBy(a => a.Video).First();
-      //_members.Remove(video);
+      var speaker1 = _members.OrderBy(a => a.Speaker).First();
+      _members.Remove(speaker1);
+      var speaker2 = _members.OrderBy(a => a.Speaker).First();
+      _members.Remove(speaker2);
+      var evaluator1 = _members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
+      _members.Remove(evaluator1);
+      var evaluator2 = _members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.Evaluator).First();
+      _members.Remove(evaluator2);
+      var toastmaster = _members.Where(a => a.CanBeToastmaster == true).OrderBy(a => a.Toastmaster).First();
+      _members.Remove(toastmaster);
+      var generalEvaluator = _members.Where(a => a.CanBeEvaluator == true).OrderBy(a => a.GeneralEvaluator).First();
+      _members.Remove(generalEvaluator);
+      var tt = _members.OrderBy(a => a.TT).First();
+      _members.Remove(tt);
+      var hotSeat = _members.OrderBy(a => a.HotSeat).First();
+      _members.Remove(hotSeat);
+      var gram = _members.OrderBy(a => a.Gram).First();
+      _members.Remove(gram);
+      var ah = _members.OrderBy(a => a.Ah).First();
+      _members.Remove(ah);
+      var quiz = _members.OrderBy(a => a.Quiz).First();
+      _members.Remove(quiz);
+      var timer = _members.OrderBy(a => a.Timer).First();
+      _members.Remove(timer);
+      var video = _members.OrderBy(a => a.Video).First();
+      _members.Remove(video);
+      
+      Toastmaster = toastmaster.ToString();
+      Speaker1 = speaker1.ToString();
+      Speaker2 = speaker2.ToString();
+      GeneralEvaluator = generalEvaluator.ToString();
+      Evaluator1 = evaluator1.ToString();
+      Evaluator2 = evaluator2.ToString();
+      TableTopics = tt.ToString();
+      HotSeat = hotSeat.ToString();
+      Grammarian = gram.ToString();
+      AhCounter = ah.ToString();
+      QuizMaster = quiz.ToString();
+      Timer = timer.ToString();
+      Video = video.ToString();
 
       //GetMembers(ref members);
-      List<DateTime> theMeetings = GetMonthlyMeetings(new DateTime(2020, 3, 4), true);
+      //List<DateTime> theMeetings = GetMonthlyMeetings(new DateTime(2020, 3, 4), true);
+      // List<DateTime> theMeetings = new List<DateTime> { DateOfMeeting };
       //int NumberOfMeetings = 6;//  meetings.Count;
       // List<string> speakers =
       //GetRolesPerMonthA(theMeetings);
-      GetRolesPerMonth(theMeetings);
+      //GetRolesPerMonth(theMeetings);
       //GetRolesPerMeeting(theMeetings);//, "speaker");
       //List<string> evaluators = GetRoles(members, theMeetings, "evaluator");
 
@@ -472,13 +494,13 @@ namespace ScheduleUI
       return meetings;
     }
 
-    List<MeetingModelRegular> GetRolesPerMonth(string month, bool generateForFriday)
+    List<MeetingModelRegular> GetRolesPerMonth(string month, bool generateForFriday, int nextMeetingID)
     {
 
       // need to have the names for each meeting be in a hash set to make them unique.
       // need logic to move names in one meeting to the next or swap with the previous meeting
       // then add them to the meeting 
-
+      int meetingID = nextMeetingID;
       //List<DateTime> theMeetings = GetMonthlyMeetings(new DateTime(2020, 3, 4), true);
       List<DateTime> meetingDates = GetMonthlyMeetings(month, generateForFriday);
       //List<DateTime> meetingDates = GetMonthlyMeetings(new DateTime(2020, 3, 4), true);
@@ -491,7 +513,10 @@ namespace ScheduleUI
       {
         var mtg = new MeetingModelRegular();
         mtg.DayOfMeeting = m.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture);
+        mtg.ID = meetingID.ToString();
+        mtg.MeetingType = "1";
         meetings.Add(mtg);
+        meetingID++;
       }
 
       List<HashSet<string>> roleNames = new List<HashSet<string>>();
@@ -572,7 +597,7 @@ namespace ScheduleUI
         if (members.Count == 0)
           members = new List<MemberModel>(_members);
         m.Toastmaster = toastmaster.Name;
-        toastmaster.Toastmaster = meetingDates[i];
+        //toastmaster.Toastmaster = meetingDates[i];
 
         var hotseat = members.OrderBy(a => a.HotSeat).First();
         m.HotSeat = hotseat.Name;

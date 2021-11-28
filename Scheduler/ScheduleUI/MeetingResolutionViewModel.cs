@@ -1,16 +1,6 @@
-﻿using System;
+﻿using SchedulerUI;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using Newtonsoft.Json;
-using SchedulerUI;
 
 namespace ScheduleUI
 {
@@ -114,15 +104,17 @@ namespace ScheduleUI
       }
     }
 
-    private MeetingModelRegular _meeting;
+    private MeetingModelBase _meeting;
 
-    public MeetingResolutionViewModel(MeetingModelRegular meetingModel, List<MemberModel> members)
+    public MeetingResolutionViewModel(MeetingModelBase mtgToResolve, List<MemberModel> members)
     {
-      _meeting = meetingModel;
+      _meeting = mtgToResolve;
       _members = members;
       Toastmaster = _meeting.Toastmaster;
       Speaker1 = _meeting.Speaker1;
       Speaker2 = _meeting.Speaker2;
+      if (mtgToResolve.MeetingType == "2")
+        Speaker3 = "Some speaker";
       GeneralEvaluator = _meeting.GeneralEvaluator;
       Evaluator1 = _meeting.Evaluator1;
       Evaluator2 = _meeting.Evaluator2;
@@ -136,6 +128,7 @@ namespace ScheduleUI
       WOTD = _meeting.WOTD;
       Theme = _meeting.Theme;
       DayOfMeeting = _meeting.DayOfMeeting;
+      MeetingType = _meeting.MeetingType;
     }
 
     public void Reset()

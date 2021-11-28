@@ -90,6 +90,10 @@
       <DependentUpon>MeetingResolutionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MeetingResolutionViewModel.cs" />
+    <Compile Include="MeetingsResolutionView.xaml.cs">
+      <DependentUpon>MeetingsResolutionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MeetingsResolutionViewModel.cs" />
     <Compile Include="MeetingView.xaml.cs">
       <DependentUpon>MeetingView.xaml</DependentUpon>
     </Compile>
@@ -97,6 +101,9 @@
     <Compile Include="MemberModel.cs" />
     <Compile Include="MembersViewModel.cs" />
     <Compile Include="MemberViewModel.cs" />
+    <Compile Include="NewMeetingView.xaml.cs">
+      <DependentUpon>NewMeetingView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="pcb.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="ReportsViewModel.cs" />
@@ -116,7 +123,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MeetingsResolutionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MeetingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NewMeetingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

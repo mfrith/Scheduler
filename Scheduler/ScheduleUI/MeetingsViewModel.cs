@@ -1,22 +1,20 @@
-﻿using SchedulerUI;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
+using SchedulerUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Globalization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using System.IO;
+using System.Linq;
+using System.Windows.Input;
 
 namespace ScheduleUI
 {
   public class MeetingsViewModel : PropertyChangedBase
   {
-    private ObservableCollection<MeetingModelRegular> _meetings;// = new ObservableCollection<MeetingModel>();
+    private ObservableCollection<MeetingModelBase> _meetings;// = new ObservableCollection<MeetingModel>();
     private List<MemberModel> _members = new List<MemberModel>();
 
     List<string> regularTemplate = new List<string>(new string[] {"Toastmaster","Speaker 1","Speaker 2","General Evaluator",
@@ -208,10 +206,11 @@ namespace ScheduleUI
     public void OK()
     {
       //push values into meeting model and save
-
-      _newMeeting.Save(_listofmeetingids.Max() + 1);
+      //var t = _meetings.Count();
+      //_newMeeting.Save(_listofmeetingids.Max() + 1);
       //var json =  JsonSerializer.ToString<MeetingModel>(_newMeeting);
       // update member info for last time being role
+      Save();
     }
     public void ResetMeeting()
     {
@@ -255,12 +254,13 @@ namespace ScheduleUI
         // write them out when okayed, then show the next one
         _newMeeting = new MeetingModelRegularVM(temporarymemberList, _home);
         _newMeeting.Month = MonthToGenerateFor;
-
-        list = _newMeeting.GenerateForMonth(GenerateForFriday);
+        var w = _meetings.Last();
+        list = _newMeeting.GenerateForMonth(GenerateForFriday, int.Parse(_meetings[_meetings.Count() - 1].ID) +1);
       }
       else
       {
-        _newMeeting = new MeetingModelRegularVM(MeetingDate.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture), MeetingTemplate, temporarymemberList);
+        //_newMeeting = new MeetingModelRegularVM(MeetingDate.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture), MeetingTemplate, temporarymemberList);
+        _newMeeting = new MeetingModelRegularVM(MeetingDate, MeetingTemplate, temporarymemberList);
         _newMeeting.Generate();
         CurrentMeeting = _newMeeting.ToList();
         _generateButtonEnabled = false;
@@ -268,6 +268,10 @@ namespace ScheduleUI
         NotifyPropertyChanged(() => RoleListVisible);
         NotifyPropertyChanged(() => GenerateButtonEnabled);
         NotifyPropertyChanged(() => ResetButtonEnabled);
+        NewMeetingView view = new NewMeetingView();
+
+        view.DataContext = CurrentMeeting;
+        view.ShowDialog();
       }
 
       _members = null;
@@ -304,7 +308,7 @@ namespace ScheduleUI
       get { return _showMeeting; }
       set { _showMeeting = value; }
     }
-    public ObservableCollection<MeetingModelRegular> Meetings
+    public ObservableCollection<MeetingModelBase> Meetings
     {
       get { return _meetings; }
     }
@@ -353,8 +357,19 @@ namespace ScheduleUI
 
 
       string json = File.ReadAllText(_home + "\\Data\\meetings5.json");
-      var meetingList = JsonConvert.DeserializeObject<List<MeetingModelRegular>>(json);
-      _meetings = new ObservableCollection<MeetingModelRegular>(meetingList);
+      //string json2 = File.ReadAllText(_home + "\\Data\\meetingsTest.json");
+
+      //var meetingList = JsonConvert.DeserializeObject<List<MeetingModelRegular>>(json);
+      //_meetings = new ObservableCollection<MeetingModelBase>(meetingList);
+
+      //using (StreamWriter writer = new StreamWriter(_home + "\\Data\\MeetingsTest.json"))
+      //{
+      //  foreach (MeetingModelRegular mtg in _meetings)
+      //  {
+      //    string mtgjson = mtg.Serialize();
+      //    writer.WriteLine(mtgjson);
+      //  }
+      //}
 
       IsoDateTimeConverter timeFormat = new IsoDateTimeConverter();
       timeFormat.DateTimeFormat = "yyyy-MM-dd";
@@ -363,26 +378,31 @@ namespace ScheduleUI
       //int vers = 1;
       //string meetingFile = _home + "\\Data\\meetings.json";
       //if (File.Exists (_home + ))
-      File.WriteAllText(_home + "\\Data\\meetings5.json", JsonConvert.SerializeObject(meetingList, timeFormat));
+      //File.WriteAllText(_home + "\\Data\\meetings5.json", JsonConvert.SerializeObject(meetingList, timeFormat));
 
       //File.WriteAllText("myobjects.json", JsonConvert.SerializeObject(playerList));
 
-      //using (StreamReader strmReader = new StreamReader("C:\\Users\\mike\\Documents\\TI\\Data\\Meetings4.json"))//, FileMode.Open, FileAccess.Read))
-      //{
-      //  //var thefile = strmReader.ReadToEnd();
-      //  var t = new List<MeetingModelBase>();
-      //  string meeting;
-      //  while ((meeting = strmReader.ReadLine()) != null)
-      //  {
-      //    MeetingModelBase bah = new MeetingModelBase();
-      //    var a = bah.Deserialize(meeting);
-      //    t.Add(a);
-      //  }
+      using (StreamReader strmReader = new StreamReader(_home + "\\Data\\meetingsTest.json"))
+      {
+        var t = new List<MeetingModelBase>();
+        string meeting;
+        while ((meeting = strmReader.ReadLine()) != null)
+        {
+          MeetingModelBase bah = new MeetingModelBase();
+          var a = bah.Deserialize(meeting);
+          if (a != null)
+            t.Add(a);
+          else
+          {
+            // what is a?
+            var r = t.Count();
+          }
+        }
 
-      //  //t.Reverse();
-      //  _meetings = new ObservableCollection<MeetingModelBase>(t);
+        //t.Reverse();
+        _meetings = new ObservableCollection<MeetingModelBase>(t);
 
-      //}
+      }
 
       //File.WriteAllText("C:\\Users\\mike\\Documents\\TI\\Data\\Meetings5.json", JsonConvert.SerializeObject(_meetings));
       //using (StreamWriter strmWriter = new StreamWriter("C:\\Users\\mike\\Documents\\TI\\Meetings5.json", true))
@@ -439,14 +459,16 @@ namespace ScheduleUI
     }
     public void Save()
     {
+      string json = File.ReadAllText(_home + "\\Data\\meetings5.json");
       if (File.Exists("C:\\Users\\mike\\Documents\\TI\\Meetings.json"))
       {
         //File.Delete("C:\\Users\\mike\\Documents\\TI\\MembersStatus.json");
 
       }
-      using (StreamWriter strmWriter = new StreamWriter("C:\\Users\\mike\\Documents\\TI\\Meetings2.json"))
+      using (StreamWriter strmWriter = new StreamWriter(_home + "\\Data\\meetings3.json"))
       {
         // write out all objects(members)
+        strmWriter.AutoFlush = true;
         string meeting = string.Empty;
         foreach (var m in _meetings)
         {
@@ -456,14 +478,10 @@ namespace ScheduleUI
 
         //var thefile = strmReader.ReadToEnd();
         var t = new List<MeetingModelRegular>();
-
-        MeetingModelRegular bah = new MeetingModelRegular();
-          var a = bah.Deserialize(meeting);
-          t.Add(a);
        
 
         t.Reverse();
-        _meetings = new ObservableCollection<MeetingModelRegular>(t);
+        _meetings = new ObservableCollection<MeetingModelBase>(t);
 
       }
     }

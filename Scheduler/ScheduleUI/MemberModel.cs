@@ -34,7 +34,16 @@ namespace SchedulerUI
 
     public int MemberID { get; set; }
     public string Name { get; set; }
-    public DateTime Toastmaster { get; set; }
+
+    private DateTime _toastmaster;
+    public DateTime Toastmaster
+    {    
+        get { return _toastmaster; }
+        set { if (value == _toastmaster)
+          return;
+        else _toastmaster = value; }
+      
+    }
     public DateTime Speaker { get; set; }
     public DateTime GeneralEvaluator { get; set; }
     public DateTime Evaluator { get; set; }

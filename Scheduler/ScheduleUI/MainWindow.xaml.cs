@@ -20,7 +20,7 @@ namespace ScheduleUI
       MainViewModel a = (MainViewModel)this.DataContext;
       a.CheckDataFiles();
       MeetingsViewModel b = (MeetingsViewModel)a.Tabs[2];
-      ObservableCollection<MeetingModelRegular> meetings = b.Meetings;
+      ObservableCollection<MeetingModelBase> meetings = b.Meetings;
       //DateTime lastMeeting = DateTime.ParseExact(meetings[0].DayOfMeeting, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
       //bool resolved = "1" == meetings[0].Resolved;
       //if (!resolved)
@@ -45,7 +45,7 @@ namespace ScheduleUI
       DateTime now = DateTime.Today.Date;
       MainViewModel a = (MainViewModel)this.DataContext;
       MeetingsViewModel b = (MeetingsViewModel)a.Tabs[2];
-      ObservableCollection<MeetingModelRegular> meetings = b.Meetings;
+      ObservableCollection<MeetingModelBase> meetings = b.Meetings;
       DateTime lastMeeting = DateTime.ParseExact(meetings[0].DayOfMeeting, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
 
       DayOfWeek dow = lastMeeting.DayOfWeek;
@@ -134,33 +134,39 @@ namespace ScheduleUI
       MainViewModel a = (MainViewModel)this.DataContext;
       a.CheckDataFiles();
       MeetingsViewModel b = (MeetingsViewModel)a.Tabs[2];
-      ObservableCollection<MeetingModelRegular> meetings = b.Meetings;
+      ObservableCollection<MeetingModelBase> meetings = b.Meetings;
 
       MembersViewModel c = (MembersViewModel)a.Tabs[1];
-      
-      List<MeetingModelRegular> meetingsToResolve = new List<MeetingModelRegular>();
-      foreach (MeetingModelRegular mtg in meetings)
+      var f = meetings.Where(it => it.Resolved == "0" || it.Resolved == "").ToList();
+
+      List<MeetingModelBase> meetingsToResolve = new List<MeetingModelBase>();
+      foreach (MeetingModelBase mtg in f)
       {
+        DateTime today = DateTime.Today.Date;
         var mtgDate = DateTime.Parse(mtg.DayOfMeeting);
-        if ((mtg.Resolved == "0" || mtg.Resolved == null))// && (mtgDate
+        int rel = DateTime.Compare(mtgDate, today);
+        if (rel < 0)
           meetingsToResolve.Add(mtg);
       }
 
       if (meetingsToResolve.Count > 0)
       {
+
+        //bool resolve = today >= DateTime.Parse(meetingsToResolve[0].DayOfMeeting);
+
         MessageBoxResult result = MessageBox.Show("Do you want to resolve past meetings?", "", MessageBoxButton.YesNo);
         if (result == MessageBoxResult.Yes)
         {
-          DateTime today = DateTime.Today.Date;
 
-          foreach (var meeting in meetingsToResolve)
-          {
-            //var meetingsR = meetingsToResolve.OrderBy
-            MeetingResolutionViewModel mtg2resolve = new MeetingResolutionViewModel(meeting, c.Members);
-
-            MeetingResolutionView view = new MeetingResolutionView();
-            view.DataContext = mtg2resolve;
-            view.ShowDialog();
+          //foreach (var meeting in meetingsToResolve)
+          //{
+          //  //var meetingsR = meetingsToResolve.OrderBy
+            //MeetingResolutionViewModel mtg2resolve = new MeetingResolutionViewModel(meeting, c.Members);
+            MeetingsResolutionViewModel mrvm = new MeetingsResolutionViewModel(meetingsToResolve, c.Members);
+            mrvm.Resolve();
+            //MeetingResolutionView view = new MeetingResolutionView();
+            //view.DataContext = mtg2resolve;
+            //view.ShowDialog();
             //NewMemberDialog dialog = new NewMemberDialog();
             //bool? result = dialog.ShowDialog();
             //int t = 0;
@@ -168,7 +174,7 @@ namespace ScheduleUI
             //  t = 1;
             //else
             //  t = 2;wpf 
-          }
+          //}
         }
       }
     }

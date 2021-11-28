@@ -1,16 +1,9 @@
-﻿using SchedulerUI;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Windows.Input;
-
-using Newtonsoft.Json;
-using System.Text;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.Runtime.InteropServices;
+using SchedulerUI;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows.Input;
 
 namespace ScheduleUI
 {

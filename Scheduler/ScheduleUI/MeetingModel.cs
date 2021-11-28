@@ -18,6 +18,13 @@ namespace SchedulerUI
     public string ID { get; set; }
     public string DayOfMeeting { get; set; }
     public string Toastmaster { get; set; }
+    public List<string> Attendees { get; set; }
+
+    public string Resolved { get; set; }
+
+    public string WOTD { get; set; }
+
+    public string Theme { get; set; } 
     public string Speaker1 { get; set; }
     public string Speaker2 { get; set; }
     public string GeneralEvaluator { get; set; }
@@ -30,13 +37,7 @@ namespace SchedulerUI
     public string QuizMaster { get; set; }
     public string Video { get; set; }
     public string HotSeat { get; set; }
-    public List<string> Attendees { get; set; }
 
-    public string Resolved { get; set; }
-    
-    public string WOTD { get; set; }
-
-    public string Theme { get; set; }
     public MeetingModelBase()
     {
 
@@ -47,7 +48,7 @@ namespace SchedulerUI
     }
 
 
-    public MeetingModelRegular Deserialize(string json)
+    public MeetingModelBase Deserialize(string json)
     {
       var options = new JsonSerializerOptions
       {
@@ -57,19 +58,29 @@ namespace SchedulerUI
       byte[] data = Encoding.UTF8.GetBytes(json);
       Utf8JsonReader reader = new Utf8JsonReader(data, isFinalBlock: true, state: default);
       string propertyName = string.Empty;
-      MeetingModelRegular f = null;
+      MeetingModelBase f = null;
       //MeetingModelRegular steve = new MeetingModelRegular();
-      reader.Read(); reader.Read();
-      var name = reader.GetString();
+      reader.Read();
+      reader.Read();
+      //var a = reader.GetString();
+      //reader.Read();
+      //var name = reader.GetString();
+
       reader.Read();
       var meetingtype = reader.GetString();
 
       if (meetingtype == "1")
         f = new MeetingModelRegular();
-      //else if (meetingtype == "4")
-      //  f = new MeetingModel4Speaker();
-      //else if (meetingtype == "30" || meetingtype == "20" || meetingtype == "10")
-      //  f = new MeetingContest();
+      else if (meetingtype == "2")
+        f = new MeetingModel3Speaker();
+      else if (meetingtype == "4")
+        f = new MeetingModel4Speaker();
+      else if (meetingtype == "10" || meetingtype == "20" || meetingtype == "30")
+        f = new MeetingContest();
+      else
+        return null;
+
+      f.MeetingType = meetingtype;
 
       while (reader.Read())
       {
@@ -84,8 +95,9 @@ namespace SchedulerUI
           case JsonTokenType.String:
             {
               string value = reader.GetString();
-              
+
               if (propertyName == "ID")
+                //               this.ID = value;
                 f.ID = value;
 
               if (propertyName == "DayOfMeeting")
@@ -100,6 +112,12 @@ namespace SchedulerUI
               if (propertyName == "Speaker2")
                 f.Speaker2 = value;
 
+              if (propertyName == "Speaker3")
+                (f as MeetingModel3Speaker).Speaker3 = value;
+
+              if (propertyName == "Speaker4")
+                (f as MeetingModel4Speaker).Speaker4 = value;
+
               if (propertyName == "GeneralEvaluator")
                 f.GeneralEvaluator = value;
 
@@ -108,6 +126,12 @@ namespace SchedulerUI
 
               if (propertyName == "Evaluator2")
                 f.Evaluator2 = value;
+
+              if (propertyName == "Evaluator3")
+                (f as MeetingModel3Speaker).Evaluator3 = value;
+
+              if (propertyName == "Evaluator4")
+                (f as MeetingModel4Speaker).Evaluator4 = value;
 
               if (propertyName == "TableTopics")
                 (f as MeetingModelRegular).TableTopics = value;
@@ -144,6 +168,12 @@ namespace SchedulerUI
 
               if (propertyName == "Theme")
                 f.Theme = value;
+
+              if (propertyName == "TTWinner")
+                (f as MeetingModelRegular).TTWinner = value;
+
+              if (propertyName == "TTContestants")
+                (f as MeetingModelRegular).TTContestants = value.Split(',').ToList();
               break;
 
             }
@@ -155,10 +185,45 @@ namespace SchedulerUI
       //return JsonSerializer.Parse<MeetingModelRegular>(json, options);
 
     }
-    public string Serialize(MeetingModelRegular meeting)
+    public string Serialize(MeetingModelBase meeting)
     {
 
-      string theMeeting = string.Empty;
+      string theMeeting = meeting.MeetingType;
+      if (theMeeting == "1")
+      {
+        using (var stream = new System.IO.MemoryStream())
+        {
+          using (var writer = new System.Text.Json.Utf8JsonWriter(stream))//, options))
+          {
+            writer.WriteStartObject();
+            writer.WriteString("MeetingType", meeting.MeetingType);
+            writer.WriteString("ID", meeting.ID);
+            writer.WriteString("DayOfMeeting", meeting.DayOfMeeting);
+            writer.WriteString("Toastmaster", meeting.Toastmaster);
+            writer.WriteString("Speaker1", meeting.Speaker1);
+            writer.WriteString("Speaker2", meeting.Speaker2);
+            writer.WriteString("GeneralEvaluator", meeting.GeneralEvaluator);
+            writer.WriteString("Evaluator1", meeting.Evaluator1);
+            writer.WriteString("Evaluator2", meeting.Evaluator2);
+            writer.WriteString("TableTopics", (meeting as MeetingModelRegular).TableTopics);
+            writer.WriteString("AhCounter", meeting.AhCounter);
+            writer.WriteString("Grammarian", meeting.Grammarian);
+            writer.WriteString("Timer", meeting.Timer);
+            writer.WriteString("QuizMaster", meeting.QuizMaster);
+            writer.WriteString("Video", meeting.Video);
+            writer.WriteString("HotSeat", meeting.HotSeat);
+            writer.WriteString("Attendees", meeting.Attendees?.ToString());
+            writer.WriteString("Resolved", meeting.Resolved);
+            writer.WriteString("WOTD", meeting.WOTD);
+            writer.WriteString("Theme", meeting.Theme);
+            writer.WriteString("TTContestants", (meeting as MeetingModelRegular).TTContestants?.ToString());
+            writer.WriteString("TTWinner", (meeting as MeetingModelRegular).TTWinner);
+            writer.WriteEndObject();
+          }
+
+          return Encoding.UTF8.GetString(stream.ToArray());
+        }
+      }
       return theMeeting;
     }
   }
@@ -166,6 +231,7 @@ namespace SchedulerUI
   public class MeetingContest : MeetingModelBase
   {
     public List<string> Contestants { get; set; }
+    public string ChiefJudge { get; set; }
 
     public MeetingContest()
     {
@@ -174,31 +240,31 @@ namespace SchedulerUI
   }
 
   [Serializable]
-  public class MeetingModelRegular
+  public class MeetingModelRegular : MeetingModelBase
   {
-    public string MeetingType { get; set; }
-    public string ID { get; set; }
-    public string DayOfMeeting { get; set; }
-    public string Toastmaster { get; set; }
-    public string Speaker1 { get; set; }
-    public string Speaker2 { get; set; }
-    public string GeneralEvaluator { get; set; }
-    public string Evaluator1 { get; set; }
-    public string Evaluator2 { get; set; }
+    //public string MeetingType { get; set; }
+    //public string ID { get; set; }
+    //public string DayOfMeeting { get; set; }
+    //public string Toastmaster { get; set; }
+    //public string Speaker1 { get; set; }
+    //public string Speaker2 { get; set; }
+    //public string GeneralEvaluator { get; set; }
+    //public string Evaluator1 { get; set; }
+    //public string Evaluator2 { get; set; }
 
-    public string AhCounter { get; set; }
-    public string Grammarian { get; set; }
-    public string Timer { get; set; }
-    public string QuizMaster { get; set; }
-    public string Video { get; set; }
-    public string HotSeat { get; set; }
-    public List<string> Attendees { get; set; }
+    //public string AhCounter { get; set; }
+    //public string Grammarian { get; set; }
+    //public string Timer { get; set; }
+    //public string QuizMaster { get; set; }
+    //public string Video { get; set; }
+    //public string HotSeat { get; set; }
+    //public List<string> Attendees { get; set; }
 
-    public string Resolved { get; set; }
+    //public string Resolved { get; set; }
 
-    public string WOTD { get; set; }
+    //public string WOTD { get; set; }
 
-    public string Theme { get; set; }
+    //public string Theme { get; set; }
     public string TableTopics { get; set; }
     public string TTWinner { get; set; }
     public List<string> TTContestants { get; set; }
@@ -281,44 +347,44 @@ namespace SchedulerUI
     //  //return JsonSerializer.Parse<MeetingModelRegular>(json, options);
 
     //}
-    //public string Serialize(MeetingModelRegular value)
-    //{
-    //  //var options = new JsonWriterOptions
-    //  //{
-    //  //  Indented = true
-    //  //};
+    public string Serialize()
+    {
+      //var options = new JsonWriterOptions
+      //{
+      //  Indented = true
+      //};
 
-    //  using (var stream = new System.IO.MemoryStream())
-    //  {
-    //    using (var writer = new System.Text.Json.Utf8JsonWriter(stream))//, options))
-    //    {
-    //      writer.WriteStartObject();
-    //      writer.WriteString("MeetingType", MeetingType);
-    //      writer.WriteString("ID", ID);
-    //      writer.WriteString("DayOfMeeting", DayOfMeeting);
-    //      writer.WriteString("Toastmaster", Toastmaster);
-    //      writer.WriteString("Speaker1", Speaker1);
-    //      writer.WriteString("Speaker2", Speaker2);
-    //      writer.WriteString("GeneralEvaluator", GeneralEvaluator);
-    //      writer.WriteString("Evaluator1", Evaluator1);
-    //      writer.WriteString("Evaluator2", Evaluator2);
-    //      writer.WriteString("TableTopics", TableTopics);
-    //      writer.WriteString("AhCounter", AhCounter);
-    //      writer.WriteString("Grammarian", Grammarian);
-    //      writer.WriteString("Timer", Timer);
-    //      writer.WriteString("QuizMaster", QuizMaster);
-    //      writer.WriteString("Video", Video);
-    //      writer.WriteString("HotSeat", HotSeat);
-    //      writer.WriteString("Attendees", Attendees?.ToString());
-    //      writer.WriteString("Resolved", Resolved);
-    //      writer.WriteEndObject();
-    //    }
+      using (var stream = new System.IO.MemoryStream())
+      {
+        using (var writer = new System.Text.Json.Utf8JsonWriter(stream))//, options))
+        {
+          writer.WriteStartObject();
+          writer.WriteString("MeetingType", MeetingType);
+          writer.WriteString("ID", ID);
+          writer.WriteString("DayOfMeeting", DayOfMeeting);
+          writer.WriteString("Toastmaster", Toastmaster);
+          writer.WriteString("Speaker1", Speaker1);
+          writer.WriteString("Speaker2", Speaker2);
+          writer.WriteString("GeneralEvaluator", GeneralEvaluator);
+          writer.WriteString("Evaluator1", Evaluator1);
+          writer.WriteString("Evaluator2", Evaluator2);
+          writer.WriteString("TableTopics", TableTopics);
+          writer.WriteString("AhCounter", AhCounter);
+          writer.WriteString("Grammarian", Grammarian);
+          writer.WriteString("Timer", Timer);
+          writer.WriteString("QuizMaster", QuizMaster);
+          writer.WriteString("Video", Video);
+          writer.WriteString("HotSeat", HotSeat);
+          writer.WriteString("Attendees", Attendees?.ToString());
+          writer.WriteString("Resolved", Resolved);
+          writer.WriteEndObject();
+        }
 
-    //    return Encoding.UTF8.GetString(stream.ToArray());
-    //  }
+        return Encoding.UTF8.GetString(stream.ToArray());
+      }
 
-    // // return JsonSerializer.ToString<MeetingModelRegular>(value, options);
-    //}
+      // return JsonSerializer.ToString<MeetingModelRegular>(value, options);
+    }
     public string Serialize(MeetingModelRegular meeting)
     {
 
@@ -440,7 +506,7 @@ namespace SchedulerUI
     public string Speaker3 { get; set; }
     public string Evaluator3 { get; set; }
   }
-  
+
   public class MeetingModel4Speaker : MeetingModel3Speaker
   {
     public MeetingModel4Speaker()
@@ -484,7 +550,7 @@ namespace SchedulerUI
   //  {
 
   //  }
-  
+
   //  public string DayOfMeetingS
   //  {
   //    get { return DayOfMeeting.ToString(); }
@@ -660,11 +726,11 @@ namespace SchedulerUI
 
 
   //    return s.ToString();
-     
+
   //  }
   //  public void GenerateMeeting(List<MemberModel> members)
   //  {
-      
+
   //    Speaker1 = members.OrderBy(a => a.Speaker).First();
   //    members.Remove(Speaker1);
   //    Speaker2 = members.OrderBy(a => a.Speaker).First();
